@@ -6,24 +6,19 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-	<header>
+	<h1>
 		TO-DO list
-	</header>
-	<form>
-		<p>
-			<input type="text" class="taskDescription" name="intendedTask" placeholder="Enter the required task" size="38">
-		</p>
-		<p>
-             <button type="button" class="addTaskButton">Add task</button> 
-			 <button type="delete" class="delTask">Delete completed task</button> 
-        </p>
-		
-	</form>
-	<ul class="tasks" id="listTasks">
-	</ul>
-	<footer>
+	</h1>
+		<input type="text" id="taskDescription" placeholder="Enter the required task" size="38"><br><br>
+		<button id="addButton">Add task</button>
+		<button id="delButton">Delete completed task</button>
+		<button id="clearAll">Clear task list</button><br><br>
+
+		<div id="output"></div>
+
+	<h3>
 		Andrew Ermakov: andrew.67@list.ru
-	</footer>
+	</h3>
 	<script src="script.js">
 	</script>
 </body>
