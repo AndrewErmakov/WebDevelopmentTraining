@@ -1,8 +1,14 @@
 body{
-	background:url('https://metvcdn.metv.com/LCen0-1545861875-1108-quiz_question_image_-4_50_pink_panther.jpg');
+	background:url('https://metvcdn.metv.com/LCen0-1545861875-1108-quiz_question_image_-4_50_pink_panther.jpg') no-repeat center center #2f2f2f;
 	position: fixed; 
 	width: 100%; 
-	height: 100%
+	height: 100%;
+	background-attachment: fixed;
+	overflow: auto;
+	-moz-background-size:100% 100%; /* для Firefox 4+ */
+    -webkit-background-size:100% 100%; /* для Safari 5+ и Chrome 4+ */
+    -khtml-background-size:100% 100%; /* для Konqueror (WebKit-браузеров) */
+	background-size:100% 100%; /* CSS3 свойство */
 }
 header{
 	font-family: Luminari, fantasy;

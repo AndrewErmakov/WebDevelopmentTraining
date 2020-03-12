@@ -1,6 +1,6 @@
 window.onload = function () {
 	let listTasks = [];
-	if (localStorage.getItem('superKey') !== undefined) {
+	if (localStorage.getItem('superKey') != undefined) {
 		listTasks = JSON.parse(localStorage.getItem('superKey'));
 		printTasks();
 	}
@@ -24,7 +24,7 @@ window.onload = function () {
 	function printTasks() {
 		let out = '';
 		for (let task in listTasks){
-			if (listTasks[task].check === true){
+			if (listTasks[task].check == true){
 				out += '<input id="flag" type="checkbox" checked>';
 			}
 			else {
