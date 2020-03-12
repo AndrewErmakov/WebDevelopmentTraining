@@ -5,10 +5,9 @@ body{
 	height: 100%;
 	background-attachment: fixed;
 	overflow: auto;
-	-moz-background-size:100% 100%; /* для Firefox 4+ */
-    -webkit-background-size:100% 100%; /* для Safari 5+ и Chrome 4+ */
-    -khtml-background-size:100% 100%; /* для Konqueror (WebKit-браузеров) */
-	background-size:100% 100%; /* CSS3 свойство */
+	-moz-background-size:100% 100%; 
+    -webkit-background-size:100% 100%; 
+	background-size:100% 100%; 
 }
 header{
 	font-family: Luminari, fantasy;
