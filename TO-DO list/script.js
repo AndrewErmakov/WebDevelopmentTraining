@@ -6,14 +6,20 @@ window.onload = function () {
 	}
 	document.getElementById('addButton').onclick = function () {
 		let newTask = document.getElementById('taskDescription').value;
-		let temp = {};
-		temp.todo = newTask;
-		temp.check = false;
-		listTasks[listTasks.length] = temp;
-		printTasks();
-		localStorage.setItem('superKey', JSON.stringify(listTasks));
-		document.getElementById('taskDescription').value = '';
-	};
+		if (newTask.length == 0){
+			alert("You have not entered anything, first enter in the input field.");
+		}
+		else {
+			let temp = {};
+			temp.todo = newTask;
+			temp.check = false;
+			listTasks[listTasks.length] = temp;
+			printTasks();
+			localStorage.setItem('superKey', JSON.stringify(listTasks));
+			document.getElementById('taskDescription').value = '';
+		}
+	}
+
 	document.getElementById('clearAll').onclick = function () {
 		listTasks = [];
 		printTasks();
