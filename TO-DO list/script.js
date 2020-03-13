@@ -29,14 +29,14 @@ window.onload = function () {
 
 	function printTasks() {
 		let out = '';
-		for (let task in listTasks){
-			if (listTasks[task].check == true){
+		for (let i = 0;i < listTasks.length; i++){
+			if (listTasks[i].check == true){
 				out += '<input id="flag" type="checkbox" checked>';
 			}
 			else {
 				out += '<input id="flag" type="checkbox">';
 			}
-			out += listTasks[task].todo + '<br>';
+			out += listTasks[i].todo + '<br>';
 
 		}
 		document.getElementById('output').innerHTML = out;
