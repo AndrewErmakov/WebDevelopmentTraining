@@ -22,3 +22,18 @@ td {
     overflow: hidden;
     background-color: aqua;
 }
+h1{
+    font-weight: bold;
+    font-stretch: condensed;
+    font-style: initial;
+    font-size-adjust: inherit;
+    font-max-size: 50px;
+}
+h2{
+    color: sienna;
+    font-family: Symbola;
+}
+
+body{
+    background-color: darksalmon;
+}
