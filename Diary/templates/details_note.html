@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="post-entry">
+        <h2>{{ note.note_heading }}</h2>
+        <p>{{ note.date }}</p>
+        <p>{{ note.text }}</p>
+    </div>
+{% endblock %}
