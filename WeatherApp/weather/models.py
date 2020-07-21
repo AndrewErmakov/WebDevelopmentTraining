@@ -1,7 +1,6 @@
 from django.db import models
 
 class City(models.Model):
-    """docstring for ."""
 
     name = models.CharField(max_length=30)
 
