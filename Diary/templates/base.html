@@ -7,10 +7,16 @@
     <link rel="stylesheet" href="{% static 'css/base.css' %}">
 </head>
 <body>
-    <header>
-        <h1><a href="/">Diary</a></h1>
-    </header>
     <div class="container">
+        <header>
+            <div class="nav-left">
+                <h1><a href="/">Diary</a></h1>
+            </div>
+            <div class="nav-right">
+                <a href="{% url 'add_new_note' %}">+ New Blog Note</a>
+            </div>
+        </header>
+
         {% block content %}
         {% endblock %}
     </div>

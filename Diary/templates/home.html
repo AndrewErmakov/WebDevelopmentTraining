@@ -3,7 +3,7 @@
 {% block content %}
     {% for note in object_list %}
     <div class="post-entry">
-        <h2><a href="">{{ note.note_heading }}</a></h2>
+        <h2><a href="{% url 'details_note' note.pk %}">{{ note.note_heading }}</a></h2>
         <p>{{ note.date }}</p>
     </div>
     {% endfor %}
