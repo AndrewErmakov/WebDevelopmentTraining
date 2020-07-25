@@ -6,4 +6,8 @@
         <p>{{ note.date }}</p>
         <p>{{ note.text }}</p>
     </div>
+    <a href="{% url 'note_edit' note.pk %}">+ Edit Note</a>
+    <a href="{% url 'note_delete' note.pk %}">+ Delete Note</a>
 {% endblock %}
+
+
