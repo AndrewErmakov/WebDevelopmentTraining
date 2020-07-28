@@ -2,9 +2,24 @@
 
 {% block content %}
     <h1>New note</h1>
-    <form method="POST">
+    <form method="POST" action="{% url 'add_new_note' %}">
         {% csrf_token %}
-        {{ form.as_p }}
+        <p>
+            Headline
+            <input type="text" name="note_heading" placeholder="Введите название заметки"><br>
+        </p>
+        
+        <p>
+            Date
+            <input type="date" name="date"><br>
+        </p>
+        
+        <p>
+            Description<br>
+            <textarea cols="40" rows="3" name="text" placeholder="Введите подробности"></textarea><br>
+        </p>
+        
+
         <input type="submit" value="Save">
     </form>
 {% endblock %}

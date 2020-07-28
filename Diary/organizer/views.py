@@ -1,9 +1,11 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
+from django.views import View
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 
 from .models import DiaryNote
 
+from datetime import datetime
 
 class NoteListView(ListView):
     """
@@ -24,26 +26,50 @@ class NoteDetailView(DetailView):
         return render(request, 'details_note.html', {'note': note})
 
 
-class NoteAddView(CreateView):
+class NoteAddView(View):
     """
     Класс добавления новой записи в ежедневник
     """
-    model = DiaryNote
-    template_name = 'add_new_note.html'
-    fields = '__all__'
+
+    def get(self, request):
+        return render(request, 'add_new_note.html')
+
+    def post(self, request):
+        date = request.POST['date']
+        note_heading = request.POST['note_heading']
+        text = request.POST['text']
+        note = DiaryNote()
+        note.date = date
+        note.note_heading = note_heading
+        note.text = text
+
+        note.save()
+
+        return redirect('details_note', pk=note.pk)
 
 
-class NoteUpdateView(UpdateView):
+class NoteUpdateView(View):
     """
     Класс обновления выбранной записи в ежедневнике
     """
-    model = DiaryNote
-    template_name = 'note_edit.html'
-    fields = [
-        'date',
-        'note_heading',
-        'text'
-    ]
+
+    def get(self, request, pk):
+        note = DiaryNote.objects.get(pk=pk)
+        note.date = str(note.date)
+        return render(request, 'note_edit.html', {'note': note})
+
+    def post(self, request, pk):
+        note = DiaryNote.objects.get(pk=pk)
+
+        date = request.POST['date']
+        note_heading = request.POST['note_heading']
+        text = request.POST['text']
+        note.date = date
+        note.note_heading = note_heading
+        note.text = text
+        note.save()
+
+        return redirect('details_note', pk=note.pk)
 
 
 class NoteDeleteView(DeleteView):

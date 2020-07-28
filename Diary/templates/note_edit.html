@@ -2,9 +2,25 @@
 
 {% block content %}
     <h1>Edit note</h1>
-    <form action="" method="POST">
+    <form action="{% url 'note_edit' note.pk %}" method="POST">
         {% csrf_token %}
-        {{ form.as_p }}
+        <p>
+            Headline
+            <input type="text" name="note_heading" value="{{ note.note_heading }}" /><br>
+        </p>
+
+        <p>
+            Date
+            <input type="date" name="date" value="{{ note.date }}" /><br>
+        </p>
+
+        <p>
+            Description<br>
+            <textarea cols="40" rows="3" name="text">{{ note.text }}</textarea><br>
+            <br>
+        </p>
+
+
 
         <input type="submit" value="Update" />
 
