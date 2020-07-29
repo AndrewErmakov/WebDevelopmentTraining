@@ -4,7 +4,7 @@
     <h1>Delete post</h1>
     <form action="" method="POST">
         {% csrf_token %}
-        <p>Are you sure you want to delete note <b>{{ object.note_heading }}</b>?</p>
+        <p>Are you sure you want to delete note <b><em>{{ note.note_heading }}</em></b>?</p>
         <input type="submit" value="Delete note" />
     </form>
 {% endblock %}
