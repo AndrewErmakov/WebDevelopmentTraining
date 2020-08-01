@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h2>Registration</h2>
+
+<form method="POST" action="{% url 'signup' %}">
+    {% csrf_token %}
+    <h2>{{ prompt }} </h2>
+    <p>
+        Username
+        <input type="text" name="username" placeholder="Введите никнейм пользователя" /><br>
+    </p>
+
+    <p>
+        Email
+        <input type="text" name="email" placeholder="Введите емейл пользователя"/><br>
+    </p>
+
+    <p>
+        Password
+        <input type="text" name="password1" placeholder="Введите пароль"/><br>
+    </p>
+
+    <p>
+        Repeat password
+        <input type="text" name="password2" placeholder="Повторите пароль"/><br>
+    </p>
+
+    <input type="submit" value="Register" />
+</form>
+
+{% endblock %}

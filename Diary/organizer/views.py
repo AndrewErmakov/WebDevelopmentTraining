@@ -7,6 +7,7 @@ from .models import DiaryNote
 
 from datetime import datetime
 
+
 class NoteListView(ListView):
     """
     Класс просмотра всех записей в ежедневнике
@@ -45,7 +46,8 @@ class NoteAddView(View):
 
         note.save()
 
-        return redirect('details_note', pk=note.pk) # перенаправление на страницу details_note после того, как добавили запись
+        return redirect('details_note',
+                        pk=note.pk)  # перенаправление на страницу details_note после того, как добавили запись
 
 
 class NoteUpdateView(View):
@@ -69,18 +71,21 @@ class NoteUpdateView(View):
         note.text = text
         note.save()
 
-        return redirect('details_note', pk=note.pk)  # перенаправление на страницу details_note после того, как обновили запись
+        return redirect('details_note',
+                        pk=note.pk)  # перенаправление на страницу details_note после того, как обновили запись
+
 
 class NoteDeleteView(View):
     """
     Класс удаления выбранной записи в ежедневнике
     """
+
     def get(self, request, pk):
         note = DiaryNote.objects.get(pk=pk)
         return render(request, 'note_delete.html', {'note': note})
-    
+
     def post(self, request, pk):
         note = DiaryNote.objects.get(pk=pk)
         note.delete()
 
-        return redirect('home') # перенаправление на страницу home после того, как удалили запись
+        return redirect('home')  # перенаправление на страницу home после того, как удалили запись

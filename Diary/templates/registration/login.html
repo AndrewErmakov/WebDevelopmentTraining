@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h2>Login</h2>
+
+<form method="POST" action="{% url 'login' %}">
+    {% csrf_token %}
+    <h2>{{ prompt }} </h2>
+    <p>
+        Username
+        <input type="text" name="username" placeholder="Введите никнейм пользователя" /><br>
+    </p>
+
+    <p>
+        Password
+        <input type="text" name="password" placeholder="Введите пароль"/><br>
+    </p>
+
+
+
+    <input type="submit" value="Login" />
+</form>
+
+{% endblock %}
