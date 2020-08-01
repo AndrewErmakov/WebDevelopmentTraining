@@ -1,29 +1,29 @@
 from django.shortcuts import render, redirect
-from django.urls import reverse_lazy
 from django.views import View
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.views.generic import ListView
 
 from .models import DiaryNote
-
-from datetime import datetime
 
 
 class NoteListView(ListView):
     """
     Класс просмотра всех записей в ежедневнике
     """
+    # def get(self, request):
+    #     notes = DiaryNote.objects.get(user=request.user)
+    #     return render(request, 'details_note.html', {'notes': notes})
     model = DiaryNote
     template_name = 'home.html'
     queryset = DiaryNote.objects.all().order_by('date')[:10]
 
 
-class NoteDetailView(DetailView):
+class NoteDetailView(View):
     """
     Класс просмотра подробной инфы о выбранной записи в ежедневнике
     """
 
     def get(self, request, pk):
-        note = DiaryNote.objects.get(pk=pk)
+        note = DiaryNote.objects.get(pk=pk, user=request.user)
         return render(request, 'details_note.html', {'note': note})
 
 
@@ -40,6 +40,8 @@ class NoteAddView(View):
         note_heading = request.POST['note_heading']
         text = request.POST['text']
         note = DiaryNote()
+        note.user = request.user
+
         note.date = date
         note.note_heading = note_heading
         note.text = text
