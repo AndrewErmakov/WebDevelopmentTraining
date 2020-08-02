@@ -5,9 +5,9 @@ from django.views.generic import ListView
 from .models import DiaryNote
 
 
-class NoteListView(ListView):
+class NotesListView(ListView):
     """
-    Класс просмотра всех записей в ежедневнике
+    Класс просмотра всех записей (всех пользователей) в ежедневнике
     """
     # def get(self, request):
     #     notes = DiaryNote.objects.get(user=request.user)
@@ -15,6 +15,15 @@ class NoteListView(ListView):
     model = DiaryNote
     template_name = 'home.html'
     queryset = DiaryNote.objects.all().order_by('date')[:10]
+
+
+class NotesListCurrentUserView(View):
+    """
+    Класс просмотра своих записей после того, как пользователь залогинился
+    """
+    def get(self, request):
+        notes = DiaryNote.objects.filter(user=request.user).order_by('date')
+        return render(request, 'notes_current_user.html', {'notes': notes})
 
 
 class NoteDetailView(View):

@@ -20,7 +20,7 @@ class LoginView(View):
         if user is not None:
             login(request, user)
             print('Welcome')
-            return redirect('home')
+            return redirect('notes_current_user', user=username)
         else:
             print('Try to login again')
             return render(request, 'login.html', {'prompt': 'Try to login again'})
