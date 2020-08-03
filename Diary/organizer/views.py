@@ -1,29 +1,34 @@
 from django.shortcuts import render, redirect
 from django.views import View
-from django.views.generic import ListView
 
 from .models import DiaryNote
 
 
-class NotesListView(ListView):
+class NotesListView(View):
     """
-    Класс просмотра всех записей (всех пользователей) в ежедневнике
+    Класс просмотра домашней страницы, если пользователь не авторизован,
+    Или просмотр заметок пользователя, если он авторизован
     """
-    # def get(self, request):
-    #     notes = DiaryNote.objects.get(user=request.user)
-    #     return render(request, 'details_note.html', {'notes': notes})
-    model = DiaryNote
-    template_name = 'home.html'
-    queryset = DiaryNote.objects.all().order_by('date')[:10]
+
+    def get(self, request):
+        if request.user.is_authenticated:
+            notes = DiaryNote.objects.filter(user=request.user).order_by('date')
+            return render(request, 'notes_current_user.html', {'notes': notes})
+        else:
+            return render(request, 'home.html')
 
 
 class NotesListCurrentUserView(View):
     """
-    Класс просмотра своих записей после того, как пользователь залогинился
+    Класс просмотра своих записей после того, как пользователь авторизовался
     """
+
     def get(self, request):
         notes = DiaryNote.objects.filter(user=request.user).order_by('date')
-        return render(request, 'notes_current_user.html', {'notes': notes})
+        if request.user.is_authenticated:
+            return render(request, 'notes_current_user.html', {'notes': notes})
+        else:
+            return redirect('login')
 
 
 class NoteDetailView(View):
@@ -32,8 +37,11 @@ class NoteDetailView(View):
     """
 
     def get(self, request, pk):
-        note = DiaryNote.objects.get(pk=pk, user=request.user)
-        return render(request, 'details_note.html', {'note': note})
+        note = DiaryNote.objects.get(pk=pk)  # user=request.user
+        if note.user == request.user:
+            return render(request, 'details_note.html', {'note': note})
+        else:
+            return redirect('home')
 
 
 class NoteAddView(View):
@@ -42,7 +50,10 @@ class NoteAddView(View):
     """
 
     def get(self, request):
-        return render(request, 'add_new_note.html')
+        if request.user.is_authenticated:
+            return render(request, 'add_new_note.html')
+        else:
+            return redirect('login')
 
     def post(self, request):
         date = request.POST['date']
@@ -69,7 +80,10 @@ class NoteUpdateView(View):
     def get(self, request, pk):
         note = DiaryNote.objects.get(pk=pk)
         note.date = str(note.date)
-        return render(request, 'note_edit.html', {'note': note})
+        if note.user == request.user:
+            return render(request, 'note_edit.html', {'note': note})
+        else:
+            return redirect('home')
 
     def post(self, request, pk):
         note = DiaryNote.objects.get(pk=pk)
@@ -93,7 +107,10 @@ class NoteDeleteView(View):
 
     def get(self, request, pk):
         note = DiaryNote.objects.get(pk=pk)
-        return render(request, 'note_delete.html', {'note': note})
+        if note.user == request.user:
+            return render(request, 'note_delete.html', {'note': note})
+        else:
+            return redirect('home')
 
     def post(self, request, pk):
         note = DiaryNote.objects.get(pk=pk)

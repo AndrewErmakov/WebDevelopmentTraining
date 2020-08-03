@@ -1,10 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    {% for note in object_list %}
-    <div class="post-entry">
-        <h2><a href="{% url 'details_note' note.pk %}">{{ note.note_heading }}</a></h2>
-        <p>{{ note.date }}</p>
-    </div>
-    {% endfor %}
+        <h3>Hi, this is the home page of the day planner app. Here you can leave notes.</h3>
+        <h3>To use the application, you need to log in. If you don't have an account, you can register.</h3>
+
 {% endblock %}

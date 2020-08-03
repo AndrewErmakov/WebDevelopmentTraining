@@ -19,11 +19,12 @@
 
         <!-- checking user authentication-->
         {% if user.is_authenticated %}
-            <p>Hi, {{ user.username }} !</p>
+        <p>Hi, <a href="{% url 'notes_current_user' %}">{{ user.username }}</a> !</p>
             <p><a href="{% url 'logout' %}">logout</a></p>
         {% else %}
             <p>You are not logged in.</p>
-            <a href="{% url 'login' %}">login</a>
+            <a href="{% url 'login' %}">login</a><br>
+            <a href="{% url 'signup' %}">signup</a>
         {% endif %}
 
         {% block content %}
