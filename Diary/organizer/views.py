@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 from django.views import View
 
@@ -44,6 +45,19 @@ class NoteDetailView(View):
             return redirect('home')
 
 
+class AddParticipantToNote(View):
+    """Класс добавленния участника(ов) заметки"""
+
+    def post(self, request, pk):
+        note = DiaryNote.objects.get(pk=pk)
+        name_participant = request.POST['participant']
+
+        participant = User.objects.get(username=name_participant)
+        note.participants.add(participant)
+        note.save()
+        return redirect('details_note', pk=pk)
+
+
 class NoteAddView(View):
     """
     Класс добавления новой записи в ежедневник
@@ -60,8 +74,8 @@ class NoteAddView(View):
         note_heading = request.POST['note_heading']
         text = request.POST['text']
         note = DiaryNote()
-        note.user = request.user
 
+        note.user = request.user
         note.date = date
         note.note_heading = note_heading
         note.text = text

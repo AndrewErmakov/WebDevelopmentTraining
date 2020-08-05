@@ -1,6 +1,5 @@
 from django.contrib.auth.models import User
 from django.db import models
-from django.urls import reverse
 
 
 class DiaryNote(models.Model):
@@ -10,14 +9,15 @@ class DiaryNote(models.Model):
     note_heading - заголовок заметки
     text - описание заметки
     """
-    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, related_name='note_creator')
     date = models.DateField()
     note_heading = models.CharField(max_length=155)
     text = models.TextField(default='Nothing')
+    participants = models.ManyToManyField(User, related_name='note_participants', default='')
 
     def __str__(self):
         """
-        Строковое отображение модели
+        Строковое отображение модели DiaryNote
         """
         return self.note_heading
 

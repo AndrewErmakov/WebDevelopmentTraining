@@ -5,9 +5,20 @@
         <h2>{{ note.note_heading }}</h2>
         <p>{{ note.date }}</p>
         <p>{{ note.text }}</p>
+        {% for participant in note.participants.all %}
+        <p>{{ participant }}</p>
+        {% endfor %}
     </div>
     <a href="{% url 'note_edit' note.pk %}">+ Edit Note</a>
     <a href="{% url 'note_delete' note.pk %}">+ Delete Note</a>
+    <p>
+        + Add participant
+        <form method="POST" action="{% url 'add_participant' note.pk %}">
+            {% csrf_token %}
+            <input type="text" name="participant">
+            <input type="submit" value="Add">
+        </form>
+    </p>
 {% endblock %}
 
 
