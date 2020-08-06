@@ -1,5 +1,5 @@
 from django.contrib.auth.models import User
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
 
 from .models import DiaryNote
@@ -13,8 +13,7 @@ class NotesListView(View):
 
     def get(self, request):
         if request.user.is_authenticated:
-            notes = DiaryNote.objects.filter(user=request.user).order_by('date')
-            return render(request, 'notes_current_user.html', {'notes': notes})
+            return redirect('notes_current_user')
         else:
             return render(request, 'home.html')
 
@@ -25,9 +24,12 @@ class NotesListCurrentUserView(View):
     """
 
     def get(self, request):
-        notes = DiaryNote.objects.filter(user=request.user).order_by('date')
         if request.user.is_authenticated:
-            return render(request, 'notes_current_user.html', {'notes': notes})
+            created_notes = DiaryNote.objects.filter(user=request.user).order_by('date')
+            notes_as_participant = DiaryNote.objects.filter(participants=request.user).order_by('date')
+            return render(request, 'notes_current_user.html', {
+                'created_notes': created_notes,
+                'notes_as_participant': notes_as_participant})
         else:
             return redirect('login')
 
@@ -40,22 +42,27 @@ class NoteDetailView(View):
     def get(self, request, pk):
         note = DiaryNote.objects.get(pk=pk)  # user=request.user
         if note.user == request.user:
-            return render(request, 'details_note.html', {'note': note})
+            return render(request, 'details_note.html', {'note': note, 'alert_flag': False, 'edit_flag': True})
+        elif request.user in note.participants.all():
+            return render(request, 'details_note.html', {'note': note, 'alert_flag': False, 'edit_flag': False})
         else:
             return redirect('home')
 
 
 class AddParticipantToNote(View):
-    """Класс добавленния участника(ов) заметки"""
+    """Класс добавления участника(ов) заметки"""
 
     def post(self, request, pk):
-        note = DiaryNote.objects.get(pk=pk)
+        note = get_object_or_404(DiaryNote, pk=pk)
         name_participant = request.POST['participant']
 
-        participant = User.objects.get(username=name_participant)
-        note.participants.add(participant)
-        note.save()
-        return redirect('details_note', pk=pk)
+        try:
+            participant = User.objects.get(username=name_participant)
+            note.participants.add(participant)
+            note.save()
+            return redirect('details_note', pk=pk)
+        except User.DoesNotExist:
+            return render(request, 'details_note.html', {'note': note, 'alert_flag': True, 'edit_flag': True})
 
 
 class NoteAddView(View):

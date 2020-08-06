@@ -1,10 +1,23 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    {% for note in notes %}
-    <div class="post-entry">
-        <h2><a href="{% url 'details_note' note.pk %}">{{ note.note_heading }}</a></h2>
-        <p>{{ note.date }}</p>
-    </div>
-    {% endfor %}
+    {% if created_notes %}
+        <h1><u>Created notes</u></h1>
+        {% for note in created_notes %}
+        <div class="post-entry">
+            <h2><a href="{% url 'details_note' note.pk %}">{{ note.note_heading }}</a></h2>
+            <p>{{ note.date }}</p>
+        </div>
+        {% endfor %}
+    {% endif %}
+
+    {% if notes_as_participant %}
+        <h1><u>Notes as participant</u></h1>
+        {% for note in notes_as_participant %}
+        <div class="post-entry">
+            <h2><a href="{% url 'details_note' note.pk %}">{{ note.note_heading }}</a></h2>
+            <p>{{ note.date }}</p>
+        </div>
+        {% endfor %}
+    {% endif %}
 {% endblock %}

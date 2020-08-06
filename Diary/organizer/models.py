@@ -4,10 +4,11 @@ from django.db import models
 
 class DiaryNote(models.Model):
     """
-    user - имя пользователя
+    user - имя пользователя (создатель заметки)
     date - дата заметки (когда нужно что-то сделать)
     note_heading - заголовок заметки
     text - описание заметки
+    participants - участники заметки
     """
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, related_name='note_creator')
     date = models.DateField()

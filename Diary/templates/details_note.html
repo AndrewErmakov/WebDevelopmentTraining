@@ -2,13 +2,23 @@
 
 {% block content %}
     <div class="post-entry">
-        <h2>{{ note.note_heading }}</h2>
-        <p>{{ note.date }}</p>
-        <p>{{ note.text }}</p>
-        {% for participant in note.participants.all %}
-        <p>{{ participant }}</p>
-        {% endfor %}
+        <h2><u>{{ note.note_heading }}</u></h2>
+
+        {% if not edit_flag %}
+            <p><h3>Creator of note: </h3>{{ note.user }}</p>
+        {% endif %}
+
+        <p><h3>Date: </h3>{{ note.date }}</p>
+        <p><h3>Description of note: </h3>{{ note.text }}</p>
+        {% if note.participants.all %}
+            <h3>Participants</h3>
+            {% for participant in note.participants.all %}
+                <p>{{ participant }}</p>
+            {% endfor %}
+        {% endif %}
     </div>
+
+    {% if edit_flag %}
     <a href="{% url 'note_edit' note.pk %}">+ Edit Note</a>
     <a href="{% url 'note_delete' note.pk %}">+ Delete Note</a>
     <p>
@@ -19,6 +29,13 @@
             <input type="submit" value="Add">
         </form>
     </p>
+    {% endif %}
+    {% if alert_flag %}
+        <script>
+            alert("This user is not in the database.");
+            document.location.href = "{% url 'details_note' note.pk %}";
+        </script>
+    {% endif %}
 {% endblock %}
 
 
