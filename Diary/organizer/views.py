@@ -1,40 +1,36 @@
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
+from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
 
 from .models import DiaryNote
 
 
-class NotesListView(View):
+class NotesListView(LoginRequiredMixin, View):
     """
     Класс просмотра домашней страницы, если пользователь не авторизован,
     Или просмотр заметок пользователя, если он авторизован
     """
-
     def get(self, request):
-        if request.user.is_authenticated:
-            return redirect('notes_current_user')
-        else:
-            return render(request, 'home.html')
+        return redirect('notes_current_user')
 
 
-class NotesListCurrentUserView(View):
+class NotesListCurrentUserView(LoginRequiredMixin, View):
     """
     Класс просмотра своих записей после того, как пользователь авторизовался
     """
 
     def get(self, request):
-        if request.user.is_authenticated:
-            created_notes = DiaryNote.objects.filter(user=request.user).order_by('date')
-            notes_as_participant = DiaryNote.objects.filter(participants=request.user).order_by('date')
-            return render(request, 'notes_current_user.html', {
-                'created_notes': created_notes,
-                'notes_as_participant': notes_as_participant})
-        else:
-            return redirect('login')
+        created_notes = DiaryNote.objects.filter(user=request.user).order_by('date')
+        notes_as_participant = DiaryNote.objects.filter(participants=request.user).order_by('date')
+        return render(request, 'notes_current_user.html', {
+            'created_notes': created_notes,
+            'notes_as_participant': notes_as_participant})
 
 
-class NoteDetailView(View):
+class NoteDetailView(LoginRequiredMixin, View):
     """
     Класс просмотра подробной инфы о выбранной записи в ежедневнике
     """
@@ -49,7 +45,7 @@ class NoteDetailView(View):
             return redirect('home')
 
 
-class AddParticipantToNote(View):
+class AddParticipantToNote(LoginRequiredMixin, View):
     """Класс добавления участника(ов) заметки"""
 
     def post(self, request, pk):
@@ -60,21 +56,20 @@ class AddParticipantToNote(View):
             participant = User.objects.get(username=name_participant)
             note.participants.add(participant)
             note.save()
-            return redirect('details_note', pk=pk)
+            return JsonResponse({'status': 'OK', 'name': name_participant})
+
         except User.DoesNotExist:
-            return render(request, 'details_note.html', {'note': note, 'alert_flag': True, 'edit_flag': True})
+
+            return JsonResponse({'status': 'BAD', 'name': name_participant})
 
 
-class NoteAddView(View):
+class NoteAddView(LoginRequiredMixin, View):
     """
     Класс добавления новой записи в ежедневник
     """
 
     def get(self, request):
-        if request.user.is_authenticated:
-            return render(request, 'add_new_note.html')
-        else:
-            return redirect('login')
+        return render(request, 'add_new_note.html')
 
     def post(self, request):
         date = request.POST['date']
@@ -93,7 +88,7 @@ class NoteAddView(View):
                         pk=note.pk)  # перенаправление на страницу details_note после того, как добавили запись
 
 
-class NoteUpdateView(View):
+class NoteUpdateView(LoginRequiredMixin, View):
     """
     Класс обновления выбранной записи в ежедневнике
     """
@@ -121,7 +116,7 @@ class NoteUpdateView(View):
                         pk=note.pk)  # перенаправление на страницу details_note после того, как обновили запись
 
 
-class NoteDeleteView(View):
+class NoteDeleteView(LoginRequiredMixin, View):
     """
     Класс удаления выбранной записи в ежедневнике
     """

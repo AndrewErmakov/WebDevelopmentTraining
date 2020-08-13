@@ -1,7 +1,8 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
-    <div class="post-entry">
+    <div class="post-entry" id="note_details">
         <h2><u>{{ note.note_heading }}</u></h2>
 
         {% if not edit_flag %}
@@ -23,19 +24,16 @@
     <a href="{% url 'note_delete' note.pk %}">+ Delete Note</a>
     <p>
         + Add participant
-        <form method="POST" action="{% url 'add_participant' note.pk %}">
+        <form method="POST" action="{% url 'add_participant' note.pk %}" id="add_participant">
             {% csrf_token %}
-            <input type="text" name="participant">
+            <label>Participant's name: </label>
+            <input type="text" name="participant" id="participant">
             <input type="submit" value="Add">
         </form>
     </p>
     {% endif %}
-    {% if alert_flag %}
-        <script>
-            alert("This user is not in the database.");
-            document.location.href = "{% url 'details_note' note.pk %}";
-        </script>
-    {% endif %}
+    <script src="{% static 'js/ajax.js' %}">
+    </script>
 {% endblock %}
 
 
