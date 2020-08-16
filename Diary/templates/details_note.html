@@ -3,16 +3,16 @@
 
 {% block content %}
     <div class="post-entry" id="note_details">
-        <h2><u>{{ note.note_heading }}</u></h2>
+        <h2 id="note_heading"><u>{{ note.note_heading }}</u></h2>
 
         {% if not edit_flag %}
-            <p><h3>Creator of note: </h3>{{ note.user }}</p>
+            <p><h3 id="user">Creator of note: </h3>{{ note.user }}</p>
         {% endif %}
 
-        <p><h3>Date: </h3>{{ note.date }}</p>
-        <p><h3>Description of note: </h3>{{ note.text }}</p>
+        <p><h3 id="date">Date: </h3>{{ note.date }}</p>
+        <p><h3 id="description">Description of note: </h3>{{ note.text }}</p>
         {% if note.participants.all %}
-            <h3>Participants</h3>
+            <h3 id="participants">Participants</h3>
             {% for participant in note.participants.all %}
                 <p>{{ participant }}</p>
             {% endfor %}

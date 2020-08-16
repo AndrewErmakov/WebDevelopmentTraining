@@ -10,15 +10,21 @@ $(document).on('submit', '#add_participant',function(e){
         },
         success:function(json){
             if (json.status === 'OK') {
+
                 alert('Participant was added with name: '  + json.name);
+
+                if (document.getElementById("participants") == null){
+                    $('#note_details').append('<h3 id="participants">Participants</h3>')
+                }
+
+                $('#note_details').append(document.createTextNode(json.name));
             }
             else {
                 alert('Participant was not found with name: ' + json.name);
+
             }
             document.getElementById("add_participant").reset();
-            $('#note_details').load('{% url 'details_note' note.pk %}');
-//            document.location.href = "{% url 'details_note' note.pk %}";
-//            document.getElementById("note_details").reset();
+
          },
         error : function(xhr,errmsg,err) {
         console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
