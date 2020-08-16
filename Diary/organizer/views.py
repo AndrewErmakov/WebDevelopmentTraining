@@ -13,6 +13,7 @@ class NotesListView(LoginRequiredMixin, View):
     Класс просмотра домашней страницы, если пользователь не авторизован,
     Или просмотр заметок пользователя, если он авторизован
     """
+
     def get(self, request):
         return redirect('notes_current_user')
 
@@ -24,10 +25,18 @@ class NotesListCurrentUserView(LoginRequiredMixin, View):
 
     def get(self, request):
         created_notes = DiaryNote.objects.filter(user=request.user).order_by('date')
+        all_dates_created_notes = list(created_notes.values_list('date', flat=True))  # получение дат всех созданных
+        # пользователем заметок
+        all_years_created_notes = list(set([date.year for date in all_dates_created_notes]))
+
         notes_as_participant = DiaryNote.objects.filter(participants=request.user).order_by('date')
+        all_dates_notes_as_participant = list(notes_as_participant.values_list('date', flat=True))
+        all_years_notes_as_participant = list(set([date.year for date in all_dates_notes_as_participant]))
         return render(request, 'notes_current_user.html', {
             'created_notes': created_notes,
-            'notes_as_participant': notes_as_participant})
+            'notes_as_participant': notes_as_participant,
+            'all_years_created_notes': all_years_created_notes,
+            'all_years_notes_as_participant': all_years_notes_as_participant})
 
 
 class NoteDetailView(LoginRequiredMixin, View):
