@@ -1,18 +1,27 @@
 {% extends 'base.html' %}
+{% load note_current_user_tags %}
 
 {% block content %}
     {% if created_notes %}
         <h1><u>Created notes</u></h1>
         {% for year in all_years_created_notes%}
             <center><h2><b>{{ year }}</b></h2></center>
+
             {% for note in created_notes %}
                 {% if year == note.date.year %}
+                    {% if first_note_flag_year == True or note.date.month != month_previous_note %}
+                        <h3>{{ note.date|date:"F" }}</h3>
+                        {% define False as first_note_flag_year %}
+                        {% define note.date.month as month_previous_note %}
+                    {% endif %}
                     <div class="post-entry">
                         <h2><a href="{% url 'details_note' note.pk %}">{{ note.note_heading }}</a></h2>
                         <p>{{ note.date }}</p>
                     </div>
                 {% endif %}
             {% endfor %}
+            {% define True as first_note_flag_year %}
+            {% define None as month_previous_note %}
         {% endfor %}
     {% endif %}
 
@@ -22,12 +31,19 @@
             <center><h2><b>{{ year }}</b></h2></center>
             {% for note in notes_as_participant %}
                 {% if year == note.date.year %}
+                    {% if first_note_flag_year == True or note.date.month != month_previous_note %}
+                        <h3>{{ note.date|date:"F" }}</h3>
+                        {% define False as first_note_flag_year %}
+                        {% define note.date.month as month_previous_note %}
+                    {% endif %}
                     <div class="post-entry">
                         <h2><a href="{% url 'details_note' note.pk %}">{{ note.note_heading }}</a></h2>
                         <p>{{ note.date }}</p>
                     </div>
                 {% endif %}
             {% endfor %}
+            {% define True as first_note_flag_year %}
+            {% define None as month_previous_note %}
         {% endfor %}
     {% endif %}
-{% endblock %}
+{% endblock content%}
