@@ -69,3 +69,8 @@ header h1 a {
     font-family: "Courier New", Courier, "Lucida Sans Typewriter", "Lucida 	Typewriter", monospace;
     font-size: 50px;
 }
+
+del {
+    text-decoration-color: red;
+    text-decoration-style: double;
+}

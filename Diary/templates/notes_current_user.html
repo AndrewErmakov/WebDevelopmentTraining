@@ -16,8 +16,13 @@
                             {% define note.date.month as month_previous_note %}
                         {% endif %}
                         <div class="post-entry">
-                            <h2><a href="{% url 'details_note' note.pk %}">{{ note.note_heading }}</a></h2>
-                            <p>{{ note.date }}</p>
+                            {% if note.date > today %}
+                                <h2><a href="{% url 'details_note' note.pk %}">{{ note.note_heading }}</a></h2>
+                                <p>{{ note.date }}</p>
+                            {% else %}
+                                <del><h2><a href="{% url 'details_note' note.pk %}">{{ note.note_heading }}</a></h2>
+                                <p>{{ note.date }}</p></del>
+                            {% endif %}
                         </div>
                     {% endif %}
                 {% endfor %}
@@ -41,8 +46,13 @@
                             {% define note.date.month as month_previous_note %}
                         {% endif %}
                         <div class="post-entry">
-                            <h2><a href="{% url 'details_note' note.pk %}">{{ note.note_heading }}</a></h2>
-                            <p>{{ note.date }}</p>
+                            {% if note.date > today %}
+                                <h2><a href="{% url 'details_note' note.pk %}">{{ note.note_heading }}</a></h2>
+                                <p>{{ note.date }}</p>
+                            {% else %}
+                                <del><h2><a href="{% url 'details_note' note.pk %}">{{ note.note_heading }}</a></h2>
+                                <p>{{ note.date }}</p></del>
+                            {% endif %}
                         </div>
                     {% endif %}
                 {% endfor %}

@@ -1,4 +1,5 @@
-from django.contrib.auth.decorators import login_required
+from datetime import datetime
+
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 from django.http import JsonResponse
@@ -31,13 +32,17 @@ class NotesListCurrentUserView(LoginRequiredMixin, View):
         notes_as_participant = DiaryNote.objects.filter(participants=request.user).order_by('date')
         all_dates_notes_as_participant = list(notes_as_participant.values_list('date', flat=True))
         all_years_notes_as_participant = list(set([date.year for date in all_dates_notes_as_participant]))
+
+        today = datetime.today().date()
+
         return render(request, 'notes_current_user.html',
                       {'created_notes': created_notes,
                        'notes_as_participant': notes_as_participant,
                        'all_years_created_notes': all_years_created_notes,
                        'all_years_notes_as_participant': all_years_notes_as_participant,
                        'month_previous_note': None,
-                       'first_note_flag_year': True})
+                       'first_note_flag_year': True,
+                       'today': today})
 
 
 class NoteDetailView(LoginRequiredMixin, View):
