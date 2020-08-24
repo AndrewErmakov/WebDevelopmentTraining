@@ -71,6 +71,15 @@ header h1 a {
 }
 
 del {
-    text-decoration-color: red;
+    text-decoration-color: black;
     text-decoration-style: double;
 }
+
+del h2 {
+    background-color: #420505;
+}
+
+.unfinished_note {
+    background-color:yellow;
+}
+

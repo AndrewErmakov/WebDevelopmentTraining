@@ -2,6 +2,7 @@ from datetime import datetime
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
+from django.db.models.functions import ExtractYear, TruncMonth, ExtractMonth
 from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
@@ -25,23 +26,16 @@ class NotesListCurrentUserView(LoginRequiredMixin, View):
     """
 
     def get(self, request):
-        created_notes = DiaryNote.objects.filter(user=request.user).order_by('date')
-        all_dates_created_notes = list(created_notes.values_list('date', flat=True))  # получение список дат всех созданных пользователем заметок
-        all_years_created_notes = list(set([date.year for date in all_dates_created_notes]))
-
-        notes_as_participant = DiaryNote.objects.filter(participants=request.user).order_by('date')
-        all_dates_notes_as_participant = list(notes_as_participant.values_list('date', flat=True))
-        all_years_notes_as_participant = list(set([date.year for date in all_dates_notes_as_participant]))
-
         today = datetime.today().date()
+
+        created_notes = DiaryNote.objects.filter(user=request.user).annotate \
+            (Year=ExtractYear('date')).annotate(month=ExtractMonth('date')).order_by('date')
+        notes_as_participant = DiaryNote.objects.filter(participants=request.user).annotate \
+            (Year=ExtractYear('date')).annotate(month=ExtractMonth('date')).order_by('date')
 
         return render(request, 'notes_current_user.html',
                       {'created_notes': created_notes,
                        'notes_as_participant': notes_as_participant,
-                       'all_years_created_notes': all_years_created_notes,
-                       'all_years_notes_as_participant': all_years_notes_as_participant,
-                       'month_previous_note': None,
-                       'first_note_flag_year': True,
                        'today': today})
 
 

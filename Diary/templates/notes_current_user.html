@@ -5,61 +5,36 @@
     {% if created_notes %}
         <div class="view_created_notes">
             <h1>Created notes</h1>
-            {% for year in all_years_created_notes%}
-                <center><h2 class="year_number"><b>{{ year }}</b></h2></center>
-
-                {% for note in created_notes %}
-                    {% if year == note.date.year %}
-                        {% if first_note_flag_year == True or note.date.month != month_previous_note %}
-                            <h3>{{ note.date|date:"F" }}</h3>
-                            {% define False as first_note_flag_year %}
-                            {% define note.date.month as month_previous_note %}
-                        {% endif %}
-                        <div class="post-entry">
-                            {% if note.date > today %}
-                                <h2><a href="{% url 'details_note' note.pk %}">{{ note.note_heading }}</a></h2>
-                                <p>{{ note.date }}</p>
-                            {% else %}
-                                <del><h2><a href="{% url 'details_note' note.pk %}">{{ note.note_heading }}</a></h2>
-                                <p>{{ note.date }}</p></del>
-                            {% endif %}
-                        </div>
-                    {% endif %}
+            {% regroup created_notes by Year as years %}
+            {% for year in years %}
+                <h1>{{ year.grouper }}</h1>
+                {% regroup year.list by month as months %}
+                {% for month in months %}
+                    <h2>{{ month.grouper| month_name }}</h2>
+                    {% for note in month.list %}
+                        <h2><a href="{% url 'details_note' note.pk %}">{{ note.note_heading }}</a></h2>
+                        <p>{{ note.date }}</p>
+                    {% endfor %}
                 {% endfor %}
-                {% define True as first_note_flag_year %}
-                {% define None as month_previous_note %}
             {% endfor %}
         </div>
-
     {% endif %}
 
     {% if notes_as_participant %}
         <div class="view_notes_as_participant">
             <h1>Notes as participant</h1>
-            {% for year in all_years_created_notes %}
-                <center><h2><b>{{ year }}</b></h2></center>
-                {% for note in notes_as_participant %}
-                    {% if year == note.date.year %}
-                        {% if first_note_flag_year == True or note.date.month != month_previous_note %}
-                            <h3>{{ note.date|date:"F" }}</h3>
-                            {% define False as first_note_flag_year %}
-                            {% define note.date.month as month_previous_note %}
-                        {% endif %}
-                        <div class="post-entry">
-                            {% if note.date > today %}
-                                <h2><a href="{% url 'details_note' note.pk %}">{{ note.note_heading }}</a></h2>
-                                <p>{{ note.date }}</p>
-                            {% else %}
-                                <del><h2><a href="{% url 'details_note' note.pk %}">{{ note.note_heading }}</a></h2>
-                                <p>{{ note.date }}</p></del>
-                            {% endif %}
-                        </div>
-                    {% endif %}
+            {% regroup notes_as_participant by Year as years %}
+            {% for year in years %}
+                <h1>{{ year.grouper }}</h1>
+                {% regroup year.list by month as months %}
+                {% for month in months %}
+                    <h2>{{ month.grouper| month_name }}</h2>
+                    {% for note in month.list %}
+                        <h2><a href="{% url 'details_note' note.pk %}">{{ note.note_heading }}</a></h2>
+                        <p>{{ note.date }}</p>
+                    {% endfor %}
                 {% endfor %}
-                {% define True as first_note_flag_year %}
-                {% define None as month_previous_note %}
             {% endfor %}
         </div>
-
     {% endif %}
 {% endblock content%}
