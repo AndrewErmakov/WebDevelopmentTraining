@@ -13,28 +13,43 @@
     <script src="{% static 'js/jquery-2.2.4.min.js' %}"></script>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <div class="nav-left">
-                <h1><a href="/">Diary</a></h1>
-            </div>
-            <div class="nav-right">
-                <a href="{% url 'add_new_note' %}">+ New Blog Note</a>
-            </div>
-        </header>
+    <nav class="navbar navbar-expand-md bg-dark navbar-dark">
+      <a class="navbar-brand" href="/">Diary</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="collapsibleNavbar">
 
-        <!-- checking user authentication-->
         {% if user.is_authenticated %}
-        <p>Hi, <a href="{% url 'notes_current_user' %}">{{ user.username }}</a> !</p>
-            <p><a href="{% url 'logout' %}">logout</a></p>
-        {% else %}
-            <p>You are not logged in.</p>
-            <a href="{% url 'login' %}">login</a><br>
-            <a href="{% url 'signup' %}">signup</a>
-        {% endif %}
+            <div class="navbar-nav mr-auto">
+                <div class="nav-item">
+                    <a class="nav-link" href="{% url 'add_new_note' %}">Add new note</a>
+                </div>
+            </div>
+            <div class="navbar-nav ml-auto">
+                <div class="nav-item">
+                    <a class="nav-link" href="{% url 'notes_current_user' %}">Hi, {{ user.username }}!</a>
+                </div>
+                <div class="nav-item">
+                    <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+                </div>
+            </div>
+            {% else %}
+            <div class="navbar-nav ml-auto">
+                <div class="nav-item">
+                    <a class="nav-link" href="{% url 'login' %}">Login</a>
+                </div>
+                <div class="nav-item">
+                    <a class="nav-link" href="{% url 'signup' %}">Sign up</a>
+                </div>
+            </div>
+            {% endif %}
+      </div>
+    </nav>
+    <br>
+    
+    {% block content %}
+    {% endblock %}
 
-        {% block content %}
-        {% endblock %}
-    </div>
 </body>
 </html>
