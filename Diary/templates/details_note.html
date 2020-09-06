@@ -2,36 +2,63 @@
 {% load static %}
 
 {% block content %}
-    <div class="post-entry" id="note_details">
-        <h2 id="note_heading"><u>{{ note.note_heading }}</u></h2>
-
+    <div class="container" id="note_details">
+        <h2><span class="badge badge-secondary">Note title: {{ note.note_heading }}</span></h2>
+        <h5 id="date">Date: <abbr title="Event date">{{ note.date }}</abbr></h5><br>
         {% if not edit_flag %}
-            <p><h3 id="user">Creator of note: </h3>{{ note.user }}</p>
+            <h4 id="user">Creator of note: <code>{{ note.user }}</code></h4><br>
         {% endif %}
-
-        <p><h3 id="date">Date: </h3>{{ note.date }}</p>
-        <p><h3 id="description">Description of note: </h3>{{ note.text }}</p>
+         <dl>
+            <dt id="description">Description of note:</dt>
+            <dd>{{ note.text }}</dd>
+        </dl>
         {% if note.participants.all %}
-            <h3 id="participants">Participants</h3>
-            {% for participant in note.participants.all %}
-                <p>{{ participant }}</p>
-            {% endfor %}
+            <blockquote class="blockquote">
+                <h3 id="participants">Participants</h3>
+                {% for participant in note.participants.all %}
+                    <footer class="blockquote-footer">{{ participant }}</footer>
+                {% endfor %}
+            </blockquote>
+        {% endif %}
+    </div>
+    <div class="container">
+        {% if edit_flag %}
+            <ul class="nav nav-tabs">
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'note_edit' note.pk %}" id="edit_note">Edit note</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'note_delete' note.pk %}" id="delete_note">Delete note</a>
+                </li>
+            </ul>
+            <div class="alert alert-info">
+                <strong>Add participant</strong><br>
+                <form method="POST" action="{% url 'add_participant' note.pk %}" id="add_participant">
+                    {% csrf_token %}
+                    <label>Participant's name: </label>
+                    <input type="text" name="participant" id="participant">
+                    <input type="submit" value="Add">
+                </form>
+            </div>
         {% endif %}
     </div>
 
-    {% if edit_flag %}
-    <a href="{% url 'note_edit' note.pk %}" id="edit_note">Edit Note</a>
-    <a href="{% url 'note_delete' note.pk %}" id="delete_note">Delete Note</a>
-    <p>
-        + Add participant
-        <form method="POST" action="{% url 'add_participant' note.pk %}" id="add_participant">
-            {% csrf_token %}
-            <label>Participant's name: </label>
-            <input type="text" name="participant" id="participant">
-            <input type="submit" value="Add">
-        </form>
-    </p>
-    {% endif %}
+
+<!--    </div>-->
+
+<!--    {% if edit_flag %}-->
+<!--    <a href="{% url 'note_edit' note.pk %}" id="edit_note">Edit Note</a>-->
+<!--    <a href="{% url 'note_delete' note.pk %}" id="delete_note">Delete Note</a>-->
+<!--    <p>-->
+<!--        + Add participant-->
+<!--        <form method="POST" action="{% url 'add_participant' note.pk %}" id="add_participant">-->
+<!--            {% csrf_token %}-->
+<!--            <label>Participant's name: </label>-->
+<!--            <input type="text" name="participant" id="participant">-->
+<!--            <input type="submit" value="Add">-->
+<!--        </form>-->
+<!--    </p>-->
+<!--    {% endif %}-->
     <script src="{% static 'js/ajax.js' %}">
     </script>
 {% endblock %}

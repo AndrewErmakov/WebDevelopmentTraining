@@ -14,10 +14,10 @@ $(document).on('submit', '#add_participant',function(e){
                 alert('Participant was added with name: '  + json.name);
 
                 if (document.getElementById("participants") == null){
-                    $('#note_details').append('<h3 id="participants">Participants</h3>')
+                    $('#note_details').append('<blockquote class="blockquote"><h3 id="participants">Participants</h3></blockquote>')
                 }
 
-                $('#note_details').append(document.createTextNode(json.name));
+                  $('#participants').append('<footer class="blockquote-footer">' + json.name + '</footer>');
             }
             else {
                 alert('Participant was not found with name: ' + json.name);
