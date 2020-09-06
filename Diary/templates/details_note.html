@@ -42,23 +42,6 @@
             </div>
         {% endif %}
     </div>
-
-
-<!--    </div>-->
-
-<!--    {% if edit_flag %}-->
-<!--    <a href="{% url 'note_edit' note.pk %}" id="edit_note">Edit Note</a>-->
-<!--    <a href="{% url 'note_delete' note.pk %}" id="delete_note">Delete Note</a>-->
-<!--    <p>-->
-<!--        + Add participant-->
-<!--        <form method="POST" action="{% url 'add_participant' note.pk %}" id="add_participant">-->
-<!--            {% csrf_token %}-->
-<!--            <label>Participant's name: </label>-->
-<!--            <input type="text" name="participant" id="participant">-->
-<!--            <input type="submit" value="Add">-->
-<!--        </form>-->
-<!--    </p>-->
-<!--    {% endif %}-->
     <script src="{% static 'js/ajax.js' %}">
     </script>
 {% endblock %}
