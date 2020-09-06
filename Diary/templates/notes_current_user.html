@@ -3,38 +3,60 @@
 
 {% block content %}
     {% if created_notes %}
-        <div class="view_created_notes">
-            <h1>Created notes</h1>
-            {% regroup created_notes by Year as years %}
-            {% for year in years %}
-                <h1>{{ year.grouper }}</h1>
-                {% regroup year.list by month as months %}
-                {% for month in months %}
-                    <h2>{{ month.grouper| month_name }}</h2>
-                    {% for note in month.list %}
-                        <h2><a href="{% url 'details_note' note.pk %}">{{ note.note_heading }}</a></h2>
-                        <p>{{ note.date }}</p>
+        <div class="jumbotron">
+            <div class="view_created_notes">
+                <h1>Created notes</h1>
+                {% regroup created_notes by Year as years %}
+                {% for year in years %}
+                    <h1 class="text-center"><kbd>{{ year.grouper }}</kbd></h1>
+                    {% regroup year.list by month as months %}
+                    {% for month in months %}
+                        <h2>{{ month.grouper| month_name }}</h2>
+                        {% for note in month.list %}
+                            <div class="container-fluid">
+                                <div class="alert alert-warning">
+                                    <blockquote class="blockquote">
+                                        <h2><a href="{% url 'details_note' note.pk %}">{{ note.note_heading }}</a></h2>
+                                        <footer class="blockquote-footer">
+                                            <code>{{ note.date }}</code>
+                                        </footer>
+                                    </blockquote>
+                                </div>
+                            </div>
+                        {% endfor %}
                     {% endfor %}
                 {% endfor %}
-            {% endfor %}
+            </div>
         </div>
+
     {% endif %}
 
     {% if notes_as_participant %}
-        <div class="view_notes_as_participant">
-            <h1>Notes as participant</h1>
-            {% regroup notes_as_participant by Year as years %}
-            {% for year in years %}
-                <h1>{{ year.grouper }}</h1>
-                {% regroup year.list by month as months %}
-                {% for month in months %}
-                    <h2>{{ month.grouper| month_name }}</h2>
-                    {% for note in month.list %}
-                        <h2><a href="{% url 'details_note' note.pk %}">{{ note.note_heading }}</a></h2>
-                        <p>{{ note.date }}</p>
+        <div class="jumbotron">
+            <div class="view_notes_as_participant">
+                <h1>Notes as participant</h1>
+                {% regroup notes_as_participant by Year as years %}
+                {% for year in years %}
+                    <h1 class="text-center"><kbd>{{ year.grouper }}</kbd></h1>
+                    {% regroup year.list by month as months %}
+                    {% for month in months %}
+                        <h2>{{ month.grouper| month_name }}</h2>
+                        {% for note in month.list %}
+                            <div class="container-fluid">
+                                <div class="alert alert-warning">
+                                    <blockquote class="blockquote">
+                                        <h2><a href="{% url 'details_note' note.pk %}">{{ note.note_heading }}</a></h2>
+                                        <footer class="blockquote-footer">
+                                            <code>{{ note.date }}</code>
+                                        </footer>
+                                    </blockquote>
+                                </div>
+                            </div>
+                        {% endfor %}
                     {% endfor %}
                 {% endfor %}
-            {% endfor %}
+            </div>
         </div>
+
     {% endif %}
 {% endblock content%}
