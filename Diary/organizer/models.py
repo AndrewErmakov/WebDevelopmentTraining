@@ -15,6 +15,7 @@ class DiaryNote(models.Model):
     note_heading = models.CharField(max_length=155)
     text = models.TextField(default='Nothing')
     participants = models.ManyToManyField(User, related_name='note_participants', default='')
+    place = models.CharField(max_length=155, default='')
 
     def __str__(self):
         """

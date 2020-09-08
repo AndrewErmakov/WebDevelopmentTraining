@@ -20,6 +20,7 @@
                 {% endfor %}
             </blockquote>
         {% endif %}
+        <div id="map" class="map" style="width: 400px; height: 400px"></div>
     </div>
     <div class="container">
         {% if edit_flag %}
@@ -42,7 +43,10 @@
             </div>
         {% endif %}
     </div>
-    <script src="{% static 'js/ajax.js' %}">
+
+    <script type="text/javascript" src="{% static 'js/ya_map.js' %}">
+    </script>
+    <script type="text/javascript" src="{% static 'js/ajax.js' %}">
     </script>
 {% endblock %}
 

@@ -1,5 +1,6 @@
 from datetime import datetime
 
+import requests
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 from django.db.models.functions import ExtractYear, TruncMonth, ExtractMonth
@@ -8,6 +9,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
 
 from .models import DiaryNote
+from .secrets_organizer_app import api_key_ya_cards
 
 
 class NotesListView(LoginRequiredMixin, View):
@@ -44,12 +46,39 @@ class NoteDetailView(LoginRequiredMixin, View):
     Класс просмотра подробной инфы о выбранной записи в ежедневнике
     """
 
+    def get_response(self, address: str, api_key=api_key_ya_cards):
+        main_response = requests.get(
+            "https://geocode-maps.yandex.ru/1.x/",
+            params=dict(format="json", apikey=api_key, geocode=address),
+        )
+        return main_response.json()['response']
+
+    def get_coordinates(self, address) -> str:
+        response = self.get_response(address)
+        data = response['GeoObjectCollection']['featureMember']
+        coordinates = data[0]['GeoObject']['Point']['pos']
+        return coordinates
+
     def get(self, request, pk):
         note = DiaryNote.objects.get(pk=pk)  # user=request.user
+        coordinates = self.get_coordinates(note.place)
+        width = float(coordinates[1])
+        longitude = float(coordinates[0])
+
         if note.user == request.user:
-            return render(request, 'details_note.html', {'note': note, 'alert_flag': False, 'edit_flag': True})
+            return render(request, 'details_note.html', {
+                'note': note,
+                'alert_flag': False,
+                'edit_flag': True,
+                'width': width,
+                'longitude': longitude})
         elif request.user in note.participants.all():
-            return render(request, 'details_note.html', {'note': note, 'alert_flag': False, 'edit_flag': False})
+            return render(request, 'details_note.html', {
+                'note': note,
+                'alert_flag': False,
+                'edit_flag': False,
+                'width': width,
+                'longitude': longitude})
         else:
             return redirect('home')
 
@@ -84,12 +113,14 @@ class NoteAddView(LoginRequiredMixin, View):
         date = request.POST['date']
         note_heading = request.POST['note_heading']
         text = request.POST['text']
+        place = request.POST['place']
         note = DiaryNote()
 
         note.user = request.user
         note.date = date
         note.note_heading = note_heading
         note.text = text
+        note.place = place
 
         note.save()
 
