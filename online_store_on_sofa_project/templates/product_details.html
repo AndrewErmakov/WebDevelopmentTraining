@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Товар: {{ product.title }}
+{% endblock title %}
+
+{% block content %}
+    <div class="list_rubrics">
+        {% for rubric in rubrics %}
+        <a href="#">{{ rubric.name }}</a>
+        {% endfor %}
+    </div>
+    <div class="product_details">
+        <h2>{{ product.title }}</a></h2>
+        <p><h3>Рубрика: </h3> {{ product.rubric }}</p>
+        <h3>Описание:</h3>
+        <p>{{ product.description }}</p>
+        <p><h3>Цена: </h3> {{ product.price }}</p>
+        <p><h3>Бренд: </h3> {{ product.brand }}</p>
+        <p><h3>Коллекция: </h3>{{ product.sale_start_time|date:"Y" }} год</p>
+    </div>
+
+{% endblock content %}

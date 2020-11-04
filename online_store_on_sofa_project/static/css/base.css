@@ -1,0 +1,22 @@
+a .logo{
+    float:left;
+    margin-top:2px;
+    margin-right:50px;
+}
+div .list_rubrics{
+    font-size: 16pt;
+    width: 150px;
+    float: left;
+}
+.list rubrics a{
+    display: blосk;
+    margin: 10px 0px;
+}
+div .product_details{
+    margin-left: 170px;
+    float:right;
+}
+
+footer {
+    background-color: #e7ff53;
+}
