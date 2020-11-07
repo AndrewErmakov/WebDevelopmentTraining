@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+Регистрация нового пользователя
+{% endblock title %}
+
+{% block content %}
+
+<h2>Регистрация нового пользователя</h2>
+
+<form method="POST" action="{% url 'signup' %}">
+    {% csrf_token %}
+    {{ form|crispy }}
+    <input type="submit" value="Заристироваться" />
+</form>
+
+{% endblock content %}
