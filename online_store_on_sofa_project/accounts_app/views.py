@@ -33,6 +33,7 @@ class LoginView(View):
     def post(self, request):
         login_form = LoginForm(request.POST)
         if login_form.is_valid():
+            human = True
             username = login_form.cleaned_data['username']
             password = login_form.cleaned_data['password']
             activation_state = RegistrationConfirmationByEmail.objects.get(username=username)

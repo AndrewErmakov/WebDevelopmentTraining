@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'store_app',
     'accounts_app',
     'crispy_forms',
+    'captcha',
 ]
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
@@ -122,6 +123,8 @@ STATICFILES_DIRS = [
     '/var/www/static/',
 ]
 
+# settings for sending e-mail
+
 # EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 EMAIL_HOST = email_host
 EMAIL_USE_TLS = True
@@ -132,3 +135,11 @@ EMAIL_HOST_PASSWORD = email_host_password
 SERVER_EMAIL = EMAIL_HOST_USER
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
+# settings for captcha
+CAPTCHA_CHALLENGE_FUNCT = 'captcha.helpers.random_char_challenge'
+
+CAPTCHA_IMAGE_SIZE = (150, 50)
+CAPTCHA_FONT_SIZE = 28
+CAPTCHA_BACKGROUND_COLOR = '#cccccc'
+CAPTCHA_FOREGROUND_COLOR = '#001100'
+CAPTCHA_LENGTH = 6
