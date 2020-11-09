@@ -23,3 +23,10 @@ class ActivationAccountForm(forms.Form):
     email = forms.EmailField(label='Электронная почта', min_length=3, max_length=40, required=True)
     activation_code = forms.CharField(label='Код активации', max_length=30, required=True,
                                       validators=[validators.MinLengthValidator(30)])
+
+
+class ChangePasswordForm(forms.Form):
+    old_password = forms.CharField(label='Старый пароль', widget=forms.PasswordInput(), min_length=6, max_length=20,
+                                   required=True)
+    new_password = forms.CharField(label='Новый пароль', widget=forms.PasswordInput(), min_length=6, max_length=20,
+                                   required=True)

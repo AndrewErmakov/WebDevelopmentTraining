@@ -5,15 +5,18 @@ import requests
 
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
+from django.core.exceptions import PermissionDenied
 from django.core.mail import EmailMultiAlternatives
 from django.shortcuts import render, redirect
 from django.conf import settings
 from django.template.loader import render_to_string
 from django.views import View
-from .forms import RegisterForm, ActivationAccountForm, LoginForm
+from .forms import *
 from .models import RegistrationConfirmationByEmail
+from django.contrib.auth.mixins import LoginRequiredMixin
 
-#from g_recaptcha.validate_recaptcha import validate_captcha
+
+# from g_recaptcha.validate_recaptcha import validate_captcha
 
 
 class LoginView(View):
@@ -108,12 +111,12 @@ class SignUpView(View):
 
 def validation_recaptcha_v2(request):
     recaptcha_response = request.POST.get('g-recaptcha-response')
-    s = requests.session()
-    r = s.post('https://www.google.com/recaptcha/api/siteverify', data={
+    session = requests.session()
+    request = session.post('https://www.google.com/recaptcha/api/siteverify', data={
         'secret': settings.GOOGLE_RECAPTCHA_SECRET_KEY,
         'response': recaptcha_response
     })
-    result = json.loads(r.text)
+    result = json.loads(request.text)
     return result
 
 
@@ -149,3 +152,35 @@ class ActivateAccountView(View):
                 redirect('activate_account')
 
         return redirect('activate_account')
+
+
+class ChangePasswordView(View, LoginRequiredMixin):
+    """Класс страницы смены пароля авторизованным пользователем,
+    если он не авторизован - попадает на страницу входа в аккаунт"""
+    def __init__(self):
+        self.raise_exception = True
+
+    def get(self, request):
+        try:
+            change_password_form = ChangePasswordForm()
+            return render(request, 'change_password.html', {'form': change_password_form,
+                                                            'title': 'Смена пароля',
+                                                            'GOOGLE_RECAPTCHA_SITE_KEY': settings.GOOGLE_RECAPTCHA_SITE_KEY})
+
+        except PermissionDenied:
+            return redirect('login')
+
+    def post(self, request):
+        change_password_form = ChangePasswordForm(request.POST)
+        if change_password_form.is_valid():
+            if request.user.check_password(change_password_form.cleaned_data['old_password']) and \
+                    validation_recaptcha_v2(request):
+                request.user.set_password(change_password_form.cleaned_data['new_password'])
+                request.user.save()
+                return redirect('home')
+            else:
+                return render(request, 'change_password.html', {'form': ChangePasswordForm(request.GET),
+                                                                'title': f'Смена пароля. Попытайтесь еще раз',
+                                                        'GOOGLE_RECAPTCHA_SITE_KEY': settings.GOOGLE_RECAPTCHA_SITE_KEY})
+        else:
+            self.get(request)
