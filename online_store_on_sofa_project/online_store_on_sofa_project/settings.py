@@ -26,8 +26,6 @@ DEBUG = True
 ALLOWED_HOSTS = []
 SECRET_KEY = secret_key
 
-# Application definition
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -38,7 +36,8 @@ INSTALLED_APPS = [
     'store_app',
     'accounts_app',
     'crispy_forms',
-    'captcha',
+    'captcha',  # simple captcha
+    'g_recaptcha',  # recaptcha
 ]
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
@@ -125,7 +124,7 @@ STATICFILES_DIRS = [
 
 # settings for sending e-mail
 
-# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 EMAIL_HOST = email_host
 EMAIL_USE_TLS = True
 # EMAIL_USE_SSL = False
@@ -135,7 +134,7 @@ EMAIL_HOST_PASSWORD = email_host_password
 SERVER_EMAIL = EMAIL_HOST_USER
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
-# settings for captcha
+# settings for simple captcha
 CAPTCHA_CHALLENGE_FUNCT = 'captcha.helpers.random_char_challenge'
 
 CAPTCHA_IMAGE_SIZE = (150, 50)
@@ -143,3 +142,7 @@ CAPTCHA_FONT_SIZE = 28
 CAPTCHA_BACKGROUND_COLOR = '#cccccc'
 CAPTCHA_FOREGROUND_COLOR = '#001100'
 CAPTCHA_LENGTH = 6
+
+# settings for recaptcha
+GOOGLE_RECAPTCHA_SITE_KEY = recaptcha_google_key_site[0]
+GOOGLE_RECAPTCHA_SECRET_KEY = recaptcha_google_key_site[1]

@@ -1,23 +1,19 @@
+import json
 import random
 import string
+import requests
 
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.core.mail import EmailMultiAlternatives
 from django.shortcuts import render, redirect
-
+from django.conf import settings
 from django.template.loader import render_to_string
 from django.views import View
 from .forms import RegisterForm, ActivationAccountForm, LoginForm
 from .models import RegistrationConfirmationByEmail
 
-
-def attribute_matching(attribute1, attribute2):
-    """function of checking the correctness of the data entered by the user during registration"""
-    if attribute1 == attribute2:
-        return True
-    else:
-        return False
+#from g_recaptcha.validate_recaptcha import validate_captcha
 
 
 class LoginView(View):
@@ -33,7 +29,6 @@ class LoginView(View):
     def post(self, request):
         login_form = LoginForm(request.POST)
         if login_form.is_valid():
-            human = True
             username = login_form.cleaned_data['username']
             password = login_form.cleaned_data['password']
             activation_state = RegistrationConfirmationByEmail.objects.get(username=username)
@@ -76,7 +71,7 @@ class SignUpView(View):
             first_name = register_form.cleaned_data['first_name']
             last_name = register_form.cleaned_data['last_name']
 
-            if attribute_matching(password, password1):
+            if password == password1:
                 user = User.objects.create_user(username=username,
                                                 email=email,
                                                 password=password,
@@ -111,30 +106,46 @@ class SignUpView(View):
         msg.send()
 
 
+def validation_recaptcha_v2(request):
+    recaptcha_response = request.POST.get('g-recaptcha-response')
+    s = requests.session()
+    r = s.post('https://www.google.com/recaptcha/api/siteverify', data={
+        'secret': settings.GOOGLE_RECAPTCHA_SECRET_KEY,
+        'response': recaptcha_response
+    })
+    result = json.loads(r.text)
+    return result
+
+
 class ActivateAccountView(View):
     def __init__(self):
         self.attempts = 3
 
     def get(self, request):
         account_activation_form = ActivationAccountForm()
-        return render(request, 'activate_account.html', {'form': account_activation_form})
+        return render(request, 'activate_account.html', {'form': account_activation_form,
+                                                         'GOOGLE_RECAPTCHA_SITE_KEY': settings.GOOGLE_RECAPTCHA_SITE_KEY})
 
+    # @validate_captcha    #не работает декоратор этот, пришлось вручную писать валидацию
     def post(self, request):
         account_activation_form = ActivationAccountForm(request.POST)
         if account_activation_form.is_valid():
             email = account_activation_form.cleaned_data['email']
             code = account_activation_form.cleaned_data['activation_code']
+            if validation_recaptcha_v2(request):
+                user_activation = RegistrationConfirmationByEmail.objects.get(email=email)
 
-            user_activation = RegistrationConfirmationByEmail.objects.get(email=email)
-            print(user_activation.activation_code == code)
-            if user_activation is not None and attribute_matching(user_activation.activation_code, code):
-                user_activation.is_confirmed = True
-                user_activation.save()
-                return redirect('login')
+                if user_activation is not None and user_activation.activation_code == code:
+                    user_activation.is_confirmed = True
+                    user_activation.save()
+                    return redirect('login')
 
+                else:
+                    self.attempts -= 1
+
+                    if self.attempts <= 0:
+                        return redirect('home')
             else:
-                self.attempts -= 1
+                redirect('activate_account')
 
-                if self.attempts <= 0:
-                    return redirect('home')
         return redirect('activate_account')

@@ -11,6 +11,8 @@
 <form method="POST" action="{% url 'activate_account' %}">
     {% csrf_token %}
     {{ form|crispy }}
+    <div class="g-recaptcha" data-sitekey="{{ GOOGLE_RECAPTCHA_SITE_KEY }}"></div>
     <input type="submit" value="Активировать" />
 </form>
+<script src='https://www.google.com/recaptcha/api.js'></script>
 {% endblock content %}
