@@ -11,10 +11,17 @@ from django.shortcuts import render, redirect
 from django.conf import settings
 from django.template.loader import render_to_string
 from django.views import View
+
+from online_store_on_sofa_project.settings import EMAIL_HOST_USER
 from .forms import *
 from .models import RegistrationConfirmationByEmail
 from django.contrib.auth.mixins import LoginRequiredMixin
-
+from django.contrib.auth.forms import PasswordResetForm
+from django.utils.http import urlsafe_base64_encode
+from django.contrib.auth.tokens import default_token_generator
+from django.utils.encoding import force_bytes
+from django.core.mail import send_mail, BadHeaderError
+from django.http import HttpResponse
 
 # from g_recaptcha.validate_recaptcha import validate_captcha
 
@@ -180,7 +187,44 @@ class ChangePasswordView(View, LoginRequiredMixin):
                 return redirect('home')
             else:
                 return render(request, 'change_password.html', {'form': ChangePasswordForm(request.GET),
-                                                                'title': f'Смена пароля. Попытайтесь еще раз',
+                                                                'title': 'Смена пароля. Попытайтесь еще раз',
                                                         'GOOGLE_RECAPTCHA_SITE_KEY': settings.GOOGLE_RECAPTCHA_SITE_KEY})
         else:
             self.get(request)
+
+
+class ResetPasswordView(View):
+    """
+    Класс страницы сброса пароля, если пользователь забыл его
+    """
+    def get(self, request):
+        if request.user is None:
+            reset_password_form = PasswordResetForm()
+            return render(request, 'password_reset.html', {'form': reset_password_form})
+        else:
+            redirect('home')
+
+    def post(self, request):
+        reset_password_form = PasswordResetForm(request.POST)
+        if reset_password_form.is_valid():
+            associated_user = User.objects.get(email=reset_password_form.cleaned_data['email'])
+            print(associated_user)
+            if associated_user.exists():
+                subject = "Запрос сброса пароля"
+                email_template_letter = "password_reset_email.html"
+                main_info = {
+                    "email": associated_user.email,
+                    'domain': '127.0.0.1:8000',
+                    'site_name': 'Online store on sofa TOP SHOP',
+                    "uid": urlsafe_base64_encode(force_bytes(associated_user.pk)),
+                    "user": associated_user,
+                    'token': default_token_generator.make_token(associated_user),
+                    'protocol': 'http',
+                }
+                email = render_to_string(email_template_letter, main_info)
+                try:
+                    send_mail(subject, email, EMAIL_HOST_USER, [associated_user.email], fail_silently=False)
+                except BadHeaderError:
+                    return HttpResponse('Invalid header found.')
+                return redirect('password_reset_done')
+

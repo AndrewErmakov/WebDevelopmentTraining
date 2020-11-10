@@ -17,13 +17,13 @@
     {{ form.password|as_crispy_field }}
     {{ form.captcha.label }}<br>
     {{ form.captcha }}
-    <button class='js-captcha-refresh'>
-        Обновить капчу
-    </button><br>
+    <button class='js-captcha-refresh'>Обновить капчу</button><br>
     <input type="submit" value="Войти" />
 </form>
 <p>Нет аккаунта?</p>
 <p><a href="{% url 'signup' %}">Зарегистрироваться</a></p>
+<p>Забыли пароль?</p>
+<p><a href="{% url 'password_reset' %}">Восстановить пароль</a></p>
 
 <script type="text/javascript" src="{% static 'js/refresh_captcha.js' %}"></script>
 {% endblock content %}

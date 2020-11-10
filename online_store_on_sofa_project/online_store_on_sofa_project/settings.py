@@ -146,3 +146,6 @@ CAPTCHA_LENGTH = 6
 # settings for recaptcha
 GOOGLE_RECAPTCHA_SITE_KEY = recaptcha_google_key_site[0]
 GOOGLE_RECAPTCHA_SECRET_KEY = recaptcha_google_key_site[1]
+
+
+LOGIN_REDIRECT_URL =  '/'
