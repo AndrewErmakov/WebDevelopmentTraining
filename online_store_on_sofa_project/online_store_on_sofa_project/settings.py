@@ -33,11 +33,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'store_app',
-    'accounts_app',
+
     'crispy_forms',
     'captcha',  # simple captcha
     'g_recaptcha',  # recaptcha
+
+    'store_app',
+    'accounts_app',
 ]
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
@@ -54,10 +56,14 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'online_store_on_sofa_project.urls'
 
+TEMPLATE_DIR = os.path.join(BASE_DIR, 'templates')
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')],
+        'DIRS': [TEMPLATE_DIR,
+                 TEMPLATE_DIR + f'/{INSTALLED_APPS[-2]}',
+                 TEMPLATE_DIR + f'/{INSTALLED_APPS[-1]}', ],
+
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -147,5 +153,4 @@ CAPTCHA_LENGTH = 6
 GOOGLE_RECAPTCHA_SITE_KEY = recaptcha_google_key_site[0]
 GOOGLE_RECAPTCHA_SECRET_KEY = recaptcha_google_key_site[1]
 
-
-LOGIN_REDIRECT_URL =  '/'
+LOGIN_REDIRECT_URL = '/'
