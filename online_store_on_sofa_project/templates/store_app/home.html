@@ -10,8 +10,9 @@
         <div class="col-sm-2 sidenav" id="list_rubrics">
             <h3>Выбрать рубрику:</h3>
             <div class="dropdown">
-                <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">Список рубрик
-                <span class="caret"></span></button>
+                <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
+                    Список рубрик<span class="caret"></span>
+                </button>
                 <ul class="dropdown-menu">
                     {% for rubric in rubrics %}
                     <li><a href="{% url 'products_by_rubric' rubric.pk %}">{{ rubric.name }}</a></li><hr>
@@ -24,6 +25,7 @@
             <h2><a href="{% url 'product_details' product.pk %}">{{ product.title }}</a></h2>
             <p>Цена: {{ product.price }}</p>
             <p>Бренд: {{ product.brand }}</p>
+            <img src="{{ product.image_product.url }}">
             {% endfor %}
         </div>
         <div class="col-sm-2 sidenav">

@@ -154,3 +154,7 @@ GOOGLE_RECAPTCHA_SITE_KEY = recaptcha_google_key_site[0]
 GOOGLE_RECAPTCHA_SECRET_KEY = recaptcha_google_key_site[1]
 
 LOGIN_REDIRECT_URL = '/'
+
+MEDIA_DIR = os.path.join(BASE_DIR, 'media')
+MEDIA_ROOT = MEDIA_DIR
+MEDIA_URL = '/media/'
