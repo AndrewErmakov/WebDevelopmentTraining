@@ -23,6 +23,7 @@ from django.utils.encoding import force_bytes
 from django.core.mail import send_mail, BadHeaderError
 from django.http import HttpResponse
 
+
 # from g_recaptcha.validate_recaptcha import validate_captcha
 
 
@@ -68,8 +69,11 @@ class SignUpView(View):
     """
 
     def get(self, request):
-        form = RegisterForm()
-        return render(request, 'signup.html', {'form': form})
+        if request.user.is_anonymous:
+            form = RegisterForm()
+            return render(request, 'signup.html', {'form': form})
+        else:
+            return redirect('home')
 
     def post(self, request):
         register_form = RegisterForm(request.POST)
@@ -132,9 +136,12 @@ class ActivateAccountView(View):
         self.attempts = 3
 
     def get(self, request):
-        account_activation_form = ActivationAccountForm()
-        return render(request, 'activate_account.html', {'form': account_activation_form,
-                                                         'GOOGLE_RECAPTCHA_SITE_KEY': settings.GOOGLE_RECAPTCHA_SITE_KEY})
+        if request.user.is_anonymous:
+            account_activation_form = ActivationAccountForm()
+            return render(request, 'activate_account.html', {'form': account_activation_form,
+                                                             'GOOGLE_RECAPTCHA_SITE_KEY': settings.GOOGLE_RECAPTCHA_SITE_KEY})
+        else:
+            return redirect('home')
 
     # @validate_captcha    #не работает декоратор этот, пришлось вручную писать валидацию
     def post(self, request):
@@ -164,8 +171,8 @@ class ActivateAccountView(View):
 class ChangePasswordView(View, LoginRequiredMixin):
     """Класс страницы смены пароля авторизованным пользователем,
     если он не авторизован - попадает на страницу входа в аккаунт"""
-    def __init__(self):
-        self.raise_exception = True
+
+    raise_exception = True
 
     def get(self, request):
         try:
@@ -188,7 +195,7 @@ class ChangePasswordView(View, LoginRequiredMixin):
             else:
                 return render(request, 'change_password.html', {'form': ChangePasswordForm(request.GET),
                                                                 'title': 'Смена пароля. Попытайтесь еще раз',
-                                                        'GOOGLE_RECAPTCHA_SITE_KEY': settings.GOOGLE_RECAPTCHA_SITE_KEY})
+                                                                'GOOGLE_RECAPTCHA_SITE_KEY': settings.GOOGLE_RECAPTCHA_SITE_KEY})
         else:
             self.get(request)
 
@@ -197,8 +204,9 @@ class ResetPasswordView(View):
     """
     Класс страницы сброса пароля, если пользователь забыл его
     """
+
     def get(self, request):
-        if request.user is None:
+        if request.user.is_anonymous:
             reset_password_form = PasswordResetForm()
             return render(request, 'password_reset.html', {'form': reset_password_form})
         else:
@@ -208,7 +216,6 @@ class ResetPasswordView(View):
         reset_password_form = PasswordResetForm(request.POST)
         if reset_password_form.is_valid():
             associated_user = User.objects.get(email=reset_password_form.cleaned_data['email'])
-            print(associated_user)
             if associated_user.exists():
                 subject = "Запрос сброса пароля"
                 email_template_letter = "password_reset_email.html"
@@ -227,4 +234,3 @@ class ResetPasswordView(View):
                 except BadHeaderError:
                     return HttpResponse('Invalid header found.')
                 return redirect('password_reset_done')
-
