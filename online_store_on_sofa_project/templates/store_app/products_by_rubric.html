@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Товары по выбранной рубрике: {{ rubric.name }}
+{% endblock title %}
+
+{% block content %}
+<div class="container-fluid text-center">
+    <div class="row content">
+        <div class="col-sm-2 sidenav" id="list_rubrics">
+            <h3>Выбрать рубрику:</h3>
+            <div class="dropdown">
+                <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">Список рубрик
+                <span class="caret"></span></button>
+                <ul class="dropdown-menu">
+                    {% for rubric in rubrics %}
+                    <li><a href="{% url 'products_by_rubric' rubric.pk %}">{{ rubric.name }}</a></li><hr>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        <div class="col-sm-8 text-left" id="products_selected_rubric">
+            <h1>Выбранная рубрика: {{ selected_rubric }}</h1>
+            {% for product in products %}
+            <h2><a href="{% url 'product_details' product.pk %}">{{ product.title }}</a></h2>
+            <p>Цена: {{ product.price }}</p>
+            <p>Бренд: {{ product.brand }}</p>
+            {% endfor %}
+        </div>
+        <div class="col-sm-2 sidenav">
+          <div class="well">
+            <p>ADS</p>
+          </div>
+          <div class="well">
+            <p>ADS</p>
+          </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
