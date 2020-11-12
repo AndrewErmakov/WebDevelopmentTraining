@@ -20,14 +20,33 @@
             </div>
         </div>
         <div class="col-sm-8 text-left" id="product_details">
-            <h1>{{ product.title }}</h1>
-            <p><h3>Рубрика: </h3> {{ product.rubric }}</p>
-            <h3>Описание:</h3>
-            <p>{{ product.description }}</p>
-            <p><h3>Цена: </h3> {{ product.price }}</p>
-            <p><h3>Бренд: </h3> {{ product.brand }}</p>
-            <p><h3>Коллекция: </h3>{{ product.sale_start_time|date:"Y" }} год</p>
-            <img src="{{ product.image_product.url }}" height="250px" class="img-thumbnail">
+            <div class="container text-center">
+              <div class="row">
+                <div class="col-sm">
+                    <h2 class="text-center" align="center">
+                        <strong>
+                            <abbr title="Щелкните на картинку, чтобы увидеть характеристики товара">
+                                {{ product.title }}
+                            </abbr>
+                        </strong>
+                    </h2>
+                    <br>
+                  <a href="#demo" data-toggle="collapse">
+                    <img src="{{ product.image_product.url }}" class="img-thumbnail person" alt="Random Name" width="500" height="500">
+                  </a>
+                  <div id="demo" class="collapse">
+                      <div class="well">
+                          <p class="text-left"><kbd>Рубрика:</kbd><code>{{ product.rubric }}</code></p>
+                          <p class="text-left"><kbd>Описание:</kbd><code>{{ product.description }}</code></p>
+                          <p class="text-left"><kbd>Цена:</kbd><code>{{ product.price }}</code></p>
+                          <p class="text-left"><kbd>Бренд:</kbd><code>{{ product.brand }}</code></p>
+                          <p class="text-left"><kbd>Коллекция:</kbd><code>{{ product.sale_start_time|date:"Y" }} год</code></p>
+                      </div>
+
+                  </div>
+                </div>
+              </div>
+            </div>
         </div>
         <div class="col-sm-2 sidenav">
           <div class="well">
