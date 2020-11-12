@@ -12,7 +12,6 @@ from django.conf import settings
 from django.template.loader import render_to_string
 from django.views import View
 
-from online_store_on_sofa_project.settings import EMAIL_HOST_USER
 from .forms import *
 from .models import RegistrationConfirmationByEmail
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -230,7 +229,7 @@ class ResetPasswordView(View):
                 }
                 email = render_to_string(email_template_letter, main_info)
                 try:
-                    send_mail(subject, email, EMAIL_HOST_USER, [associated_user.email], fail_silently=False)
+                    send_mail(subject, email, [associated_user.email], fail_silently=False)
                 except BadHeaderError:
                     return HttpResponse('Invalid header found.')
                 return redirect('password_reset_done')

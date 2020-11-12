@@ -8,7 +8,7 @@ class HomePage(View):
     """Класс просмотра домашней страницы: на ней отображаются товары-новинки"""
 
     def get(self, request):
-        new_products = Product.objects.all()[:5]
+        new_products = Product.objects.all()[:6]
         rubrics = Rubric.objects.all()
         context = {'new_products': new_products, 'rubrics': rubrics}
         return render(request, 'home.html', context)
