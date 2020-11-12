@@ -21,11 +21,22 @@
         </div>
         <div class="col-sm-8 text-left" id="products_selected_rubric">
             <h1>Выбранная рубрика: {{ selected_rubric }}</h1>
-            {% for product in products %}
-            <h2><a href="{% url 'product_details' product.pk %}">{{ product.title }}</a></h2>
-            <p>Цена: {{ product.price }}</p>
-            <p>Бренд: {{ product.brand }}</p>
-            {% endfor %}
+            <div class="container">
+                <div class="row">
+                    {% for product in products %}
+                    <div class="col-sm-4">
+                        <div class="panel panel-default">
+                            <div class="panel-heading"><p align="center"><a href="{% url 'product_details' product.pk %}">{{ product.title }}</a></p></div>
+                            <div class="panel-body" id="product_image" align="center"><img src="{{ product.image_product.url }}" width="240px" height="210px" class="img-thumbnail"></div>
+                            <div class="panel-footer">
+                                <p>Цена: {{ product.price }}</p>
+                                <p>Бренд: {{ product.brand }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div><br>
         </div>
         <div class="col-sm-2 sidenav">
           <div class="well">
