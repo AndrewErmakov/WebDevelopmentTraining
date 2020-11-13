@@ -1,7 +1,8 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views import View
 
 from .models import Product, Rubric
+from .forms import AddNewProductBySuperuserForm
 
 
 class HomePage(View):
@@ -42,3 +43,22 @@ class ProductsByRubricPage(View):
                    'rubrics': rubrics,
                    'selected_rubric': selected_rubric}
         return render(request, 'products_by_rubric.html', context)
+
+
+class AddNewProductBySuperuser(View):
+    """Класс добавления нового товара суперпользователем или манагерами магазина"""
+
+    def get(self, request):
+        if request.user.is_superuser or request.user.is_staff:
+            form = AddNewProductBySuperuserForm()
+            return render(request, 'add_new_product.html', {'form': form})
+        else:
+            return redirect('home')
+
+    def post(self, request):
+        form = AddNewProductBySuperuserForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return self.get(request)
+        else:
+            return redirect('home')

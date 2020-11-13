@@ -41,15 +41,27 @@ class LoginView(View):
         if login_form.is_valid():
             username = login_form.cleaned_data['username']
             password = login_form.cleaned_data['password']
-            activation_state = RegistrationConfirmationByEmail.objects.get(username=username)
+
             user = authenticate(username=username, password=password)
-            if user is not None and activation_state.is_confirmed:
-                login(request, user)
-                print('Welcome')
-                return redirect('home')
+            if user is not None:
+                if user.is_superuser:
+                    login(request, user)
+                    return redirect('home')
+
+                activation_state = RegistrationConfirmationByEmail.objects.get(username=username)
+                if activation_state is not None:
+                    if activation_state.is_confirmed:
+                        login(request, user)
+                        return redirect('home')
+                    else:
+                        return redirect('activate_account')
+                else:
+                    return redirect('signup')
             else:
-                print('Try to login again')
-                return self.get(request)
+                redirect('signup')
+
+        else:
+            return self.get(request)
 
 
 class LogoutView(View):
@@ -229,7 +241,9 @@ class ResetPasswordView(View):
                 }
                 email = render_to_string(email_template_letter, main_info)
                 try:
-                    send_mail(subject, email, [associated_user.email], fail_silently=False)
+                    send_mail(subject=subject, message=email,
+                              from_email=settings.EMAIL_HOST, recipient_list=[associated_user.email],
+                              fail_silently=False)
                 except BadHeaderError:
                     return HttpResponse('Invalid header found.')
                 return redirect('password_reset_done')
