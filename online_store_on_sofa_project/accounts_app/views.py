@@ -48,7 +48,7 @@ class LoginView(View):
                     login(request, user)
                     return redirect('home')
 
-                activation_state = RegistrationConfirmationByEmail.objects.get(username=username)
+                activation_state = RegistrationConfirmationByEmail.objects.get(user=user)
                 if activation_state is not None:
                     if activation_state.is_confirmed:
                         login(request, user)
@@ -106,7 +106,7 @@ class SignUpView(View):
 
                 secret_code = ''.join(random.choice(string.ascii_uppercase + string.ascii_lowercase + string.digits)
                                       for _ in range(30))
-                self.save_registration_attempt(email=email, code=secret_code, username=username)
+                self.save_registration_attempt(user=user, code=secret_code)
 
                 data = {'email': email, 'first_name': first_name, 'last_name': last_name, 'code': secret_code}
                 self.send_letter_confirm_registration(data)
@@ -117,11 +117,10 @@ class SignUpView(View):
 
                 return self.get(request)
 
-    def save_registration_attempt(self, email, code, username):
+    def save_registration_attempt(self, user, code):
         registration_attempt = RegistrationConfirmationByEmail()
-        registration_attempt.email = email
+        registration_attempt.user = user
         registration_attempt.activation_code = code
-        registration_attempt.username = username
         registration_attempt.save()
 
     def send_letter_confirm_registration(self, data):

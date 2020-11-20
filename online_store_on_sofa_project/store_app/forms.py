@@ -1,8 +1,14 @@
 from django.forms import ModelForm
-from .models import Product
+from .models import Product, ImageProduct
 
 
 class AddNewProductBySuperuserForm(ModelForm):
     class Meta:
         model = Product
-        fields = ['title', 'description', 'price', 'brand', 'rubric', 'image_product']
+        fields = ['title', 'description', 'price', 'brand', 'rubric']
+
+
+class AddImageNewProductBySuperuserForm(ModelForm):
+    class Meta:
+        model = ImageProduct
+        fields = ['image', 'product']
