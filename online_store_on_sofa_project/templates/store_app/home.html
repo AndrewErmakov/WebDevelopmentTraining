@@ -27,7 +27,35 @@
                     <div class="col-sm-4">
                         <div class="panel panel-default">
                             <div class="panel-heading"><p align="center"><a href="{% url 'product_details' product.pk %}">{{ product.title }}</a></p></div>
-                            <!--div class="panel-body" id="product_image" align="center"><img src="{{ product.image_product.url }}" width="240px" height="210px" class="img-thumbnail"></div-->
+
+                            <div class="panel-body" id="product_image" align="center">
+                                  <div id="carousel" class="carousel slide" data-ride="carousel">
+                                      <div class="carousel-inner">
+                                          {% for image_product in product.imageproduct_set.all %}
+
+                                          {% if forloop.first %}
+                                            <div class="item active">
+                                              <img src="{{ image_product.image.url }}" alt="{{ product.title }}" width="240px" height="210px" class="img-thumbnail">
+                                            </div>
+                                          {% else %}
+                                            <div class="item">
+                                              <img src="{{ image_product.image.url }}" alt="{{ product.title }}" width="240px" height="210px" class="img-thumbnail">
+                                            </div>
+                                          {% endif %}
+
+                                          {% endfor %}
+                                      </div>
+                                      <a class="left carousel-control" href="#carousel" role="button" data-slide="prev">
+                                            <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+                                            <span class="sr-only">Предыдущий</span>
+                                      </a>
+                                      <a class="right carousel-control" href="#carousel" role="button" data-slide="next">
+                                        <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                                        <span class="sr-only">Следующий</span>
+                                      </a>
+                                    </div>
+                            </div>
+
                             <div class="panel-footer">
                                 <p>Цена: {{ product.price }}</p>
                                 <p>Бренд: {{ product.brand }}</p>

@@ -27,8 +27,6 @@ class ProductDetailsPage(View):
 
     def get(self, request, pk):
         product = Product.objects.get(pk=pk)
-        # images_product = product.imageproduct_set.all()
-        # image_product = images_product[0]
         rubrics = Rubric.objects.all()
         context = {'product': product, 'rubrics': rubrics}
         return render(request, 'product_details.html', context)
