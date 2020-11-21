@@ -28,7 +28,7 @@
                         <div class="panel panel-default">
                             <div class="panel-heading"><p align="center"><a href="{% url 'product_details' product.pk %}">{{ product.title }}</a></p></div>
                             <div class="panel-body" id="product_image" align="center">
-                                  <div id="carousel" class="carousel slide" data-ride="carousel">
+                                  <div id="carousel_{{ forloop.counter }}" class="carousel slide" data-ride="carousel">
                                       <div class="carousel-inner">
                                           {% for image_product in product.imageproduct_set.all %}
                                           {% if forloop.first %}
@@ -42,11 +42,11 @@
                                           {% endif %}
                                           {% endfor %}
                                       </div>
-                                      <a class="left carousel-control" href="#carousel" role="button" data-slide="prev">
+                                      <a class="left carousel-control" href="#carousel_{{ forloop.counter }}" role="button" data-slide="prev">
                                             <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
                                             <span class="sr-only">Предыдущий</span>
                                       </a>
-                                      <a class="right carousel-control" href="#carousel" role="button" data-slide="next">
+                                      <a class="right carousel-control" href="#carousel_{{ forloop.counter }}" role="button" data-slide="next">
                                         <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
                                         <span class="sr-only">Следующий</span>
                                       </a>
