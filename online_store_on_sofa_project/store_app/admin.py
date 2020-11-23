@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Rubric, Product, ImageProduct
+from .models import *
 
 
 class ProductAdmin(admin.ModelAdmin):
@@ -14,6 +14,13 @@ class ImageProductAdmin(admin.ModelAdmin):
     search_fields = ('product',)
 
 
+class CommentAdmin(admin.ModelAdmin):
+    list_display = ('product', 'text_comment', 'author_comment', 'rating', 'data_comment')
+    list_display_links = ['product', 'text_comment']
+    search_fields = ('product', 'text_comment',)
+
+
 admin.site.register(Product, ProductAdmin)
 admin.site.register(Rubric)
 admin.site.register(ImageProduct, ImageProductAdmin)
+admin.site.register(Comment, CommentAdmin)

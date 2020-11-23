@@ -53,7 +53,22 @@
                     <p class="text-left"><kbd>Бренд:</kbd><code>{{ product.brand }}</code></p>
                     <p class="text-left"><kbd>Коллекция:</kbd><code>{{ product.sale_start_time|date:"Y" }} год</code></p>
               </div>
-            </div>
+            {% if product.comment_set.all %}
+            <div class="container">
+              <div class="row">
+                  {% for comment in product.comment_set.all %}
+                  <div class="panel panel-primary">
+                    <div class="panel-heading">Оценка: {{ comment.rating }}</div>
+                    <div class="panel-body">{{ comment.text_comment }}</div>
+                    <div class="panel-footer">
+                        {{ comment.author_comment.first_name }} {{ comment.author_comment.last_name }}
+                    </div>
+                  </div>
+                  {% endfor %}
+                </div>
+            </div><br><br>
+            {% endif %}
+        </div>
         <div class="col-sm-2 sidenav">
           <div class="well">
             <p>ADS</p>
