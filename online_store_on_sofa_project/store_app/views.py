@@ -1,7 +1,8 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect
 from django.views import View
 
-from .models import Product, Rubric
+from .models import Product, Rubric, Comment
 from .forms import *
 
 
@@ -27,8 +28,9 @@ class ProductDetailsPage(View):
 
     def get(self, request, pk):
         product = Product.objects.get(pk=pk)
+        form = AddNewCommentForm()
         rubrics = Rubric.objects.all()
-        context = {'product': product, 'rubrics': rubrics}
+        context = {'product': product, 'rubrics': rubrics, 'form': form}
         return render(request, 'product_details.html', context)
 
 
@@ -66,17 +68,38 @@ class AddNewProductBySuperuser(View):
 
 class AddImageProductBySuperuser(View):
     """Класс добавления изображения нового товара суперпользователем или манагерами магазина"""
+
     def get(self, request):
         if request.user.is_superuser or request.user.is_staff:
-            form = AddImageNewProductBySuperuserForm()
+            form = AddNewCommentForm()
             return render(request, 'add_image_product.html', {'form': form})
         else:
             return redirect('home')
 
     def post(self, request):
-        form = AddImageNewProductBySuperuserForm(request.POST, request.FILES)
+        form = AddNewCommentForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
             return redirect('add_image_product')
         else:
             return redirect('home')
+
+
+class AddNewComment(LoginRequiredMixin, View):
+    """Класс добавления комментария (мнения по товару, его оценка)"""
+
+    def post(self, request):
+        form = AddNewCommentForm(request.POST)
+        if form.is_valid():
+            print(request.POST)
+            new_comment = Comment(
+                rating=int(form.cleaned_data['rating']),
+                text_comment=form.cleaned_data['text_comment'],
+                author_comment=request.user,
+                product=Product.objects.get(pk=request.POST['product_id'])
+            )
+            new_comment.save()
+            return redirect('home')
+
+        else:
+            return redirect('add_image_product')

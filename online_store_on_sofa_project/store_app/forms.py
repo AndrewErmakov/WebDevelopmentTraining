@@ -1,5 +1,5 @@
 from django.forms import ModelForm
-from .models import Product, ImageProduct
+from .models import Product, ImageProduct, Comment
 
 
 class AddNewProductBySuperuserForm(ModelForm):
@@ -12,3 +12,9 @@ class AddImageNewProductBySuperuserForm(ModelForm):
     class Meta:
         model = ImageProduct
         fields = ['image', 'product']
+
+
+class AddNewCommentForm(ModelForm):
+    class Meta:
+        model = Comment
+        fields = ['rating', 'text_comment']

@@ -9,4 +9,5 @@ urlpatterns = [
     path('products_by_rubric/<int:pk>/', ProductsByRubricPage.as_view(), name='products_by_rubric'),
     path('add_new_product', AddNewProductBySuperuser.as_view(), name='add_new_product'),
     path('add_image_product', AddImageProductBySuperuser.as_view(), name='add_image_product'),
+    path('add_new_comment', AddNewComment.as_view(), name='add_new_comment'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
