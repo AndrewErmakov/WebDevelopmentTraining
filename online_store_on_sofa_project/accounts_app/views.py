@@ -33,8 +33,11 @@ class LoginView(View):
     """
 
     def get(self, request):
-        login_form = LoginForm()
-        return render(request, 'login.html', {'form': login_form})
+        if request.user.is_authenticated:
+            redirect('home')
+        else:
+            login_form = LoginForm()
+            return render(request, 'login.html', {'form': login_form})
 
     def post(self, request):
         login_form = LoginForm(request.POST)
