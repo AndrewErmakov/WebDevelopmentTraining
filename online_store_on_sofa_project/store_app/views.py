@@ -28,9 +28,11 @@ class ProductDetailsPage(View):
 
     def get(self, request, pk):
         product = Product.objects.get(pk=pk)
+        presence_flag_comment_user = bool(len(product.comment_set.filter(author_comment=request.user)))
         form = AddNewCommentForm()
         rubrics = Rubric.objects.all()
-        context = {'product': product, 'rubrics': rubrics, 'form': form}
+        context = {'product': product, 'rubrics': rubrics, 'form': form,
+                   'presence_flag_comment_user': presence_flag_comment_user}
         return render(request, 'product_details.html', context)
 
 

@@ -57,13 +57,17 @@
                     <p class="text-left"><kbd>Коллекция:</kbd><code>{{ product.sale_start_time|date:"Y" }} год</code></p>
               </div>
             {% if user.is_authenticated %}
-            <form method="POST" action="{% url 'add_new_comment' %}" id="add_comment">
-                {% csrf_token %}
-                {{ form|crispy }}
-                <input type="hidden" value="{{ product.id }}" name="product_id">
-                <button type="submit" form="add_comment" value="Добавить комментарий">Добавить комментарий</button>
-                <!--input type="submit"   /-->
-            </form>
+                {% if presence_flag_comment_user %}
+                <h2>Вы уже оставили комментарий</h2>
+                {% else %}
+                <form method="POST" action="{% url 'add_new_comment' %}" id="add_comment">
+                    {% csrf_token %}
+                    {{ form|crispy }}
+                    <input type="hidden" value="{{ product.id }}" name="product_id">
+                    <button type="submit" form="add_comment" value="Добавить комментарий">Добавить комментарий</button>
+                    <!--input type="submit"   /-->
+                </form>
+                {% endif %}
             {% endif %}
             {% if product.comment_set.all %}
             <div class="row">
