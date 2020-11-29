@@ -1,4 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.views import View
 
@@ -29,10 +30,8 @@ class ProductDetailsPage(View):
     def get(self, request, pk):
         product = Product.objects.get(pk=pk)
         presence_flag_comment_user = bool(len(product.comment_set.filter(author_comment=request.user)))
-        form = AddNewCommentForm()
         rubrics = Rubric.objects.all()
-        context = {'product': product, 'rubrics': rubrics, 'form': form,
-                   'presence_flag_comment_user': presence_flag_comment_user}
+        context = {'product': product, 'rubrics': rubrics, 'presence_flag_comment_user': presence_flag_comment_user}
         return render(request, 'product_details.html', context)
 
 
@@ -73,13 +72,13 @@ class AddImageProductBySuperuser(View):
 
     def get(self, request):
         if request.user.is_superuser or request.user.is_staff:
-            form = AddNewCommentForm()
+            form = AddImageNewProductBySuperuserForm()
             return render(request, 'add_image_product.html', {'form': form})
         else:
             return redirect('home')
 
     def post(self, request):
-        form = AddNewCommentForm(request.POST, request.FILES)
+        form = AddImageNewProductBySuperuserForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
             return redirect('add_image_product')
@@ -91,17 +90,25 @@ class AddNewComment(LoginRequiredMixin, View):
     """Класс добавления комментария (мнения по товару, его оценка)"""
 
     def post(self, request):
-        form = AddNewCommentForm(request.POST)
-        if form.is_valid():
-            print(request.POST)
+        response_data = {}
+        # print(request.POST)
+        try:
+            rating = request.POST.get('rating')
+            text_comment = request.POST.get('text_comment')
             new_comment = Comment(
-                rating=int(form.cleaned_data['rating']),
-                text_comment=form.cleaned_data['text_comment'],
+                rating=int(rating),
+                text_comment=text_comment,
                 author_comment=request.user,
-                product=Product.objects.get(pk=request.POST['product_id'])
+                product=Product.objects.get(pk=request.POST.get('product_id'))
             )
             new_comment.save()
-            return redirect('home')
+            response_data['status'] = 'OK'
+            response_data['rating'] = rating
+            response_data['text_comment'] = text_comment
+            response_data['user'] = request.user.username
+            return JsonResponse(response_data)
 
-        else:
-            return redirect('add_image_product')
+        except:
+            response_data['status'] = 'BAD'
+            return JsonResponse(response_data)
+

@@ -14,7 +14,3 @@ class AddImageNewProductBySuperuserForm(ModelForm):
         fields = ['image', 'product']
 
 
-class AddNewCommentForm(ModelForm):
-    class Meta:
-        model = Comment
-        fields = ['rating', 'text_comment']

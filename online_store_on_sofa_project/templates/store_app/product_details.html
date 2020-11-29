@@ -60,17 +60,21 @@
                 {% if presence_flag_comment_user %}
                 <h2>Вы уже оставили комментарий</h2>
                 {% else %}
-                <form method="POST" action="{% url 'add_new_comment' %}" id="add_comment">
+                <form method="POST" action="{% url 'add_new_comment' %}" id="add_comment_form">
                     {% csrf_token %}
-                    {{ form|crispy }}
-                    <input type="hidden" value="{{ product.id }}" name="product_id">
-                    <button type="submit" form="add_comment" value="Добавить комментарий">Добавить комментарий</button>
-                    <!--input type="submit"   /-->
+                    <label>Оценка</label>
+                    <input type="text" name="rating" id="rating" required><br>
+                    <label>Текст комментария</label><br>
+                    <textarea name="text_comment" id="text_comment" rows="10" cols="100" required></textarea>
+
+                    <input type="hidden" name="product_id" value="{{ product.id }}" id="product_id">
+                    <br>
+                    <button type="submit" class="btn btn-primary">Добавить комментарий</button>
                 </form>
                 {% endif %}
             {% endif %}
             {% if product.comment_set.all %}
-            <div class="row">
+            <div class="row" id="comments">
               {% for comment in product.comment_set.all %}
               <div class="panel panel-primary">
                 <div class="panel-heading">Оценка: {{ comment.rating }}</div>
