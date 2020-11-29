@@ -55,6 +55,11 @@
                     <p class="text-left"><kbd>Цена:</kbd><code>{{ product.price }}</code></p>
                     <p class="text-left"><kbd>Бренд:</kbd><code>{{ product.brand }}</code></p>
                     <p class="text-left"><kbd>Коллекция:</kbd><code>{{ product.sale_start_time|date:"Y" }} год</code></p>
+                    {% if rating %}
+                    <p class="text-left"><kbd>Рейтинг:</kbd><code>{{ rating }}</code></p>
+                    {% else %}
+                    <p class="text-left"><kbd>Рейтинг:</kbd><code>оценок нет</code></p>
+                    {% endif %}
               </div>
             {% if user.is_authenticated %}
                 {% if presence_flag_comment_user %}

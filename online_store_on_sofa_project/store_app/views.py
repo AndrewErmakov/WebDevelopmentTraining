@@ -31,8 +31,21 @@ class ProductDetailsPage(View):
         product = Product.objects.get(pk=pk)
         presence_flag_comment_user = bool(len(product.comment_set.filter(author_comment=request.user)))
         rubrics = Rubric.objects.all()
-        context = {'product': product, 'rubrics': rubrics, 'presence_flag_comment_user': presence_flag_comment_user}
+        try:
+            total_rating = self.get_total_rating(product)
+        except ZeroDivisionError:  # при отсутствии оценок от пользователей и комментариев на товар
+            total_rating = 0
+
+        context = {'product': product, 'rubrics': rubrics, 'presence_flag_comment_user': presence_flag_comment_user,
+                   'rating': total_rating}
         return render(request, 'product_details.html', context)
+
+    def get_total_rating(self, product, sum_points=0):
+        comments = product.comment_set.all()
+        for comment in comments:
+            sum_points += comment.rating
+
+        return round(sum_points / len(comments), 1)
 
 
 class ProductsByRubricPage(View):
@@ -91,7 +104,6 @@ class AddNewComment(LoginRequiredMixin, View):
 
     def post(self, request):
         response_data = {}
-        # print(request.POST)
         try:
             rating = request.POST.get('rating')
             text_comment = request.POST.get('text_comment')
@@ -111,4 +123,3 @@ class AddNewComment(LoginRequiredMixin, View):
         except:
             response_data['status'] = 'BAD'
             return JsonResponse(response_data)
-
