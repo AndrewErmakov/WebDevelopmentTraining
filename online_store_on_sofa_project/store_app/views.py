@@ -29,8 +29,12 @@ class ProductDetailsPage(View):
 
     def get(self, request, pk):
         product = Product.objects.get(pk=pk)
-        presence_flag_comment_user = bool(len(product.comment_set.filter(author_comment=request.user)))
         rubrics = Rubric.objects.all()
+        try:
+            presence_flag_comment_user = bool(len(product.comment_set.filter(author_comment=request.user)))
+        except:
+            presence_flag_comment_user = False
+
         try:
             total_rating = self.get_total_rating(product)
         except ZeroDivisionError:  # при отсутствии оценок от пользователей и комментариев на товар
