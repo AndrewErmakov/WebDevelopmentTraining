@@ -11,3 +11,5 @@ urlpatterns = [
     path('add_image_product', AddImageProductBySuperuser.as_view(), name='add_image_product'),
     path('add_new_comment', AddNewComment.as_view(), name='add_new_comment'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+

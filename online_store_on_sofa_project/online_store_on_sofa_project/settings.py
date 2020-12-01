@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'captcha',  # simple captcha
     'g_recaptcha',  # recaptcha
 
+    # my apps
     'store_app',
     'accounts_app',
 ]
@@ -62,7 +63,8 @@ TEMPLATES = [
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [TEMPLATE_DIR,
                  TEMPLATE_DIR + f'/{INSTALLED_APPS[-2]}',
-                 TEMPLATE_DIR + f'/{INSTALLED_APPS[-1]}', ],
+                 TEMPLATE_DIR + f'/{INSTALLED_APPS[-1]}',
+                 TEMPLATE_DIR + '/errors', ],
 
         'APP_DIRS': True,
         'OPTIONS': {

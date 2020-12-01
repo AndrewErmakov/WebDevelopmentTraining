@@ -72,6 +72,12 @@
                     {% else %}
                     <p class="text-left"><kbd>Рейтинг:</kbd><code>оценок нет</code></p>
                     {% endif %}
+
+                    {% if count_product %}
+                    <p class="text-left"><kbd>Товар в наличии в количестве экземпляров на складе:</kbd><code>{{ count_product }}</code></p>
+                    {% else %}
+                    <p class="text-left"><kbd>Товара нет в наличии</kbd></p>
+                    {% endif %}
               </div>
             {% if user.is_authenticated %}
                 {% if presence_flag_comment_user %}

@@ -20,8 +20,8 @@ class Product(models.Model):
     rubric = models.ForeignKey('Rubric', on_delete=models.PROTECT, null=True, verbose_name='Рубрика')
 
     class Meta:
-        verbose_name_plural = 'Объявления'
-        verbose_name = 'Объявление'
+        verbose_name_plural = 'Товары'
+        verbose_name = 'Товар'
         ordering = ['-sale_start_time']
 
     def __str__(self):
@@ -70,3 +70,29 @@ class Rubric(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class Warehouse_products(models.Model):
+    product = models.OneToOneField(Product, on_delete=models.DO_NOTHING, verbose_name='Товар')
+    count_products = models.PositiveSmallIntegerField(verbose_name='Количество товаров')
+
+    class Meta:
+        verbose_name_plural = 'Склад товаров'
+        verbose_name = 'Ячейка для хранения одной позиции товара'
+        ordering = ['product']
+
+    def __str__(self):
+        return self.product.title + ' с количеством ' + self.count_products
+
+
+class Basket_user(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name='Корзина пользователя')
+    products = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name='Товары в корзине')
+
+    class Meta:
+        verbose_name_plural = 'Корзина пользователя с товарами'
+        verbose_name = 'Товар в корзине'
+        ordering = ['products']
+
+    def __str__(self):
+        return self.user.username

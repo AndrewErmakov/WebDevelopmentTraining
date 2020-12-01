@@ -2,8 +2,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.views import View
-
-from .models import Product, Rubric, Comment
+from .models import Product, Rubric, Comment, Warehouse_products
 from .forms import *
 
 
@@ -31,6 +30,11 @@ class ProductDetailsPage(View):
         product = Product.objects.get(pk=pk)
         rubrics = Rubric.objects.all()
         try:
+            count_product = Warehouse_products.objects.get(product=product).count_products
+        except:
+            count_product = 0
+
+        try:
             presence_flag_comment_user = bool(len(product.comment_set.filter(author_comment=request.user)))
         except:
             presence_flag_comment_user = False
@@ -41,7 +45,7 @@ class ProductDetailsPage(View):
             total_rating = 0
 
         context = {'product': product, 'rubrics': rubrics, 'presence_flag_comment_user': presence_flag_comment_user,
-                   'rating': total_rating}
+                   'rating': total_rating, 'count_product': count_product}
         return render(request, 'product_details.html', context)
 
     def get_total_rating(self, product, sum_points=0):
@@ -127,3 +131,7 @@ class AddNewComment(LoginRequiredMixin, View):
         except:
             response_data['status'] = 'BAD'
             return JsonResponse(response_data)
+
+
+def custom_handler404(request, exception):
+    return render(request, 'error404.html')
