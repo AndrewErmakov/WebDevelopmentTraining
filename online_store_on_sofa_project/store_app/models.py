@@ -86,7 +86,7 @@ class Warehouse_products(models.Model):
 
 
 class Basket_user(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name='Корзина пользователя')
+    user = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name='Никнейм покупателя')
     products = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name='Товары в корзине')
 
     class Meta:

@@ -10,6 +10,7 @@ urlpatterns = [
     path('add_new_product', AddNewProductBySuperuser.as_view(), name='add_new_product'),
     path('add_image_product', AddImageProductBySuperuser.as_view(), name='add_image_product'),
     path('add_new_comment', AddNewComment.as_view(), name='add_new_comment'),
+    path('add_product_to_basket', AddProductToBasket.as_view(), name='add_product_to_basket'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 

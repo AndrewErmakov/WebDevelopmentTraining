@@ -2,7 +2,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.views import View
-from .models import Product, Rubric, Comment, Warehouse_products
+from .models import Product, Rubric, Comment, Warehouse_products, Basket_user
 from .forms import *
 
 
@@ -135,3 +135,19 @@ class AddNewComment(LoginRequiredMixin, View):
 
 def custom_handler404(request, exception):
     return render(request, 'error404.html')
+
+
+class AddProductToBasket(View, LoginRequiredMixin):
+    def post(self, request):
+        response_data = {}
+        print(request.POST)
+        try:
+            product = Product.objects.get(pk=request.POST.get('product_id'))
+            user = request.user
+            new_product_to_buy = Basket_user(products=product, user=user)
+            new_product_to_buy.save()
+            response_data['status'] = 'OK'
+            return JsonResponse(response_data)
+        except:
+            response_data['status'] = 'BAD'
+            return JsonResponse(response_data)

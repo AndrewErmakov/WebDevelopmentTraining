@@ -78,6 +78,11 @@
                     {% else %}
                     <p class="text-left"><kbd>Товара нет в наличии</kbd></p>
                     {% endif %}
+                    <form method="POST" action="{% url 'add_product_to_basket' %}" class="add_product_to_basket" id="add_product_to_basket">
+                        {% csrf_token %}
+                        <input type="hidden" name="product_id_to_basket" value="{{ product.id }}" id="product_id_to_basket">
+                        <button type="submit" class="btn btn-sm btn-block btn-primary">Добавить в корзину</button>
+                    </form>
               </div>
             {% if user.is_authenticated %}
                 {% if presence_flag_comment_user %}
@@ -125,5 +130,6 @@
 
 {% block scripts %}
 <script type="text/javascript" src="{% static 'js/add_comment_ajax.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/add_product_to_basket.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/star-rating.min.js' %}"></script>
 {% endblock scripts %}
