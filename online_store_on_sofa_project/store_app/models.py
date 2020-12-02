@@ -29,6 +29,7 @@ class Product(models.Model):
 
 
 class ImageProduct(models.Model):
+    """Модель изображения товара"""
     image = models.ImageField(null=True, blank=True, verbose_name='Изображения товара',
                               upload_to="images/store_app/products/",
                               validators=[validators.validate_image_file_extension])
@@ -44,6 +45,7 @@ class ImageProduct(models.Model):
 
 
 class Comment(models.Model):
+    """Модель комментария к товару"""
     text_comment = models.TextField(blank=True, null=True, verbose_name='Комментарий')
     rating = models.PositiveSmallIntegerField(validators=[validators.MaxValueValidator(5)], verbose_name='Оценка')
     product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name='Товар')

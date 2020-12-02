@@ -21,3 +21,22 @@ $(document).on('submit', '#add_product_to_basket',function(e){
     }
     });
 });
+
+$('#increase_num').on('click', function() {
+	var current_count = $('#number').val();
+	current_count = +current_count + 1;
+	$('#number').val(current_count);
+});
+
+
+$('#reduce_num').on('click', function() {
+	var current_count = $('#number').val();
+	if (current_count > 1){
+		current_count = +current_count - 1;
+		$('#number').val(current_count);
+	}
+	else{
+		alert('Минимальное количество товаров для заказа - 1');
+	}
+
+});

@@ -147,7 +147,9 @@ class AddProductToBasket(View, LoginRequiredMixin):
             new_product_to_buy = Basket_user(products=product, user=user)
             new_product_to_buy.save()
             response_data['status'] = 'OK'
+            print(response_data['status'])
             return JsonResponse(response_data)
         except:
             response_data['status'] = 'BAD'
+            print(response_data['status'])
             return JsonResponse(response_data)

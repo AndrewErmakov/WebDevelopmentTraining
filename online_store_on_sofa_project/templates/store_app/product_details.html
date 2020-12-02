@@ -75,14 +75,18 @@
 
                     {% if count_product %}
                     <p class="text-left"><kbd>Товар в наличии в количестве экземпляров на складе:</kbd><code>{{ count_product }}</code></p>
+                    <form method="POST" action="{% url 'add_product_to_basket' %}" class="add_product_to_basket" id="add_product_to_basket">
+                        {% csrf_token %}
+                        <button type="button" id="reduce_num">-</button>
+                        <input type="text" id="number" value="1">
+                        <button type="button" id="increase_num">+</button>
+                        <input type="hidden" name="product_id_to_basket" value="{{ product.id }}" id="product_id_to_basket">
+                        <button type="submit" class="btn btn-success">Добавить в корзину</button>
+                    </form>
                     {% else %}
                     <p class="text-left"><kbd>Товара нет в наличии</kbd></p>
                     {% endif %}
-                    <form method="POST" action="{% url 'add_product_to_basket' %}" class="add_product_to_basket" id="add_product_to_basket">
-                        {% csrf_token %}
-                        <input type="hidden" name="product_id_to_basket" value="{{ product.id }}" id="product_id_to_basket">
-                        <button type="submit" class="btn btn-sm btn-block btn-primary">Добавить в корзину</button>
-                    </form>
+
               </div>
             {% if user.is_authenticated %}
                 {% if presence_flag_comment_user %}
