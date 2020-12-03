@@ -78,7 +78,7 @@
                     <form method="POST" action="{% url 'add_product_to_basket' %}" class="add_product_to_basket" id="add_product_to_basket">
                         {% csrf_token %}
                         <button type="button" id="reduce_num">-</button>
-                        <input type="text" id="number" value="1">
+                        <input type="text" id="number" value="1" name="number">
                         <button type="button" id="increase_num">+</button>
                         <input type="hidden" name="product_id_to_basket" value="{{ product.id }}" id="product_id_to_basket">
                         <button type="submit" class="btn btn-success">Добавить в корзину</button>

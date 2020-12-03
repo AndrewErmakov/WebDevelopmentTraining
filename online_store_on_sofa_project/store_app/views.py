@@ -2,7 +2,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.views import View
-from .models import Product, Rubric, Comment, Warehouse_products, Basket_user
+from .models import Product, Rubric, Comment, WarehouseProducts, BasketUser
 from .forms import *
 
 
@@ -30,7 +30,7 @@ class ProductDetailsPage(View):
         product = Product.objects.get(pk=pk)
         rubrics = Rubric.objects.all()
         try:
-            count_product = Warehouse_products.objects.get(product=product).count_products
+            count_product = WarehouseProducts.objects.get(product=product).count_products
         except:
             count_product = 0
 
@@ -140,12 +140,15 @@ def custom_handler404(request, exception):
 class AddProductToBasket(View, LoginRequiredMixin):
     def post(self, request):
         response_data = {}
-        print(request.POST)
         try:
-            product = Product.objects.get(pk=request.POST.get('product_id'))
-            user = request.user
-            new_product_to_buy = Basket_user(products=product, user=user)
-            new_product_to_buy.save()
+            basket_current_user = BasketUser.objects.filter(user=request.user)
+            if len(basket_current_user) != 0:
+                basket_current_user[0].products.add(Product.objects.get(pk=request.POST.get('product_id')))
+            else:
+                basket_current_user = BasketUser(user=request.user)
+                basket_current_user.save()
+                basket_current_user.products.add(Product.objects.get(pk=request.POST.get('product_id')))
+
             response_data['status'] = 'OK'
             print(response_data['status'])
             return JsonResponse(response_data)

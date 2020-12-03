@@ -4,13 +4,17 @@ $(document).on('submit', '#add_product_to_basket',function(e){
             type:'POST',
             url: $("#add_product_to_basket").prop('action'),
             data:{
+                count_products:$('#number').val(),
                 product_id:$('#product_id_to_basket').val(),
                 csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
                 action: 'post'
             },
             success:function(json){
                     if (json.status === 'OK'){
-                        alert('added to basket')
+                        alert('added to basket');
+                        if (document.getElementById("go_to_basket") == null){
+                            $('#add_comment_form').append('<button id="go_to_basket" class="btn btn-primary">Перейти в корзину</button>');
+                        }
                     }
                     else{
                         alert('do not add to basket');

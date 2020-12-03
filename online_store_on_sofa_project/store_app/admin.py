@@ -27,8 +27,8 @@ class WarehouseProductsAdmin(admin.ModelAdmin):
 
 
 class BasketUserAdmin(admin.ModelAdmin):
-    list_display = ('products', 'user')
-    list_display_links = ['products', 'user']
+    list_display = ['user']
+    list_display_links = ['user']
     search_fields = ('products', 'user',)
 
 
@@ -36,6 +36,6 @@ admin.site.register(Product, ProductAdmin)
 admin.site.register(Rubric)
 admin.site.register(ImageProduct, ImageProductAdmin)
 admin.site.register(Comment, CommentAdmin)
-admin.site.register(Warehouse_products, WarehouseProductsAdmin)
-admin.site.register(Basket_user, BasketUserAdmin)
+admin.site.register(WarehouseProducts, WarehouseProductsAdmin)
+admin.site.register(BasketUser, BasketUserAdmin)
 

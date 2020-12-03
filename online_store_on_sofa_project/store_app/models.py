@@ -74,7 +74,7 @@ class Rubric(models.Model):
         return self.name
 
 
-class Warehouse_products(models.Model):
+class WarehouseProducts(models.Model):
     product = models.OneToOneField(Product, on_delete=models.DO_NOTHING, verbose_name='Товар')
     count_products = models.PositiveSmallIntegerField(verbose_name='Количество товаров')
 
@@ -87,14 +87,14 @@ class Warehouse_products(models.Model):
         return self.product.title + ' с количеством ' + self.count_products
 
 
-class Basket_user(models.Model):
+class BasketUser(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name='Никнейм покупателя')
-    products = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name='Товары в корзине')
+    products = models.ManyToManyField(Product, verbose_name='Товары в корзине')
 
     class Meta:
         verbose_name_plural = 'Корзина пользователя с товарами'
         verbose_name = 'Товар в корзине'
-        ordering = ['products']
+        ordering = ['user']
 
     def __str__(self):
         return self.user.username
