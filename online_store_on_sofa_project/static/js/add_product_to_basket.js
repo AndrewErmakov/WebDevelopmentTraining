@@ -13,7 +13,7 @@ $(document).on('submit', '#add_product_to_basket',function(e){
                     if (json.status === 'OK'){
                         alert('added to basket');
                         if (document.getElementById("go_to_basket") == null){
-                            $('#add_comment_form').append('<button id="go_to_basket" class="btn btn-primary">Перейти в корзину</button>');
+                            $('#main_info_product').append('<input id="go_to_basket" type="button" value="Перейти в корзину">');
                         }
                     }
                     else{
@@ -44,3 +44,4 @@ $('#reduce_num').on('click', function() {
 	}
 
 });
+

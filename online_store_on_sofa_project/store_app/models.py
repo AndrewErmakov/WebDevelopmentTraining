@@ -84,7 +84,7 @@ class WarehouseProducts(models.Model):
         ordering = ['product']
 
     def __str__(self):
-        return self.product.title + ' с количеством ' + self.count_products
+        return self.product.title + ' с количеством ' + str(self.count_products)
 
 
 class BasketUser(models.Model):

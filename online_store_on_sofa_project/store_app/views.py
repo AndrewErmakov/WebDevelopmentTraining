@@ -1,4 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.models import AnonymousUser
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.views import View
@@ -138,6 +139,7 @@ def custom_handler404(request, exception):
 
 
 class AddProductToBasket(View, LoginRequiredMixin):
+    """Класс добавления товара в корзину пользователя"""
     def post(self, request):
         response_data = {}
         try:
@@ -150,9 +152,42 @@ class AddProductToBasket(View, LoginRequiredMixin):
                 basket_current_user.products.add(Product.objects.get(pk=request.POST.get('product_id')))
 
             response_data['status'] = 'OK'
-            print(response_data['status'])
             return JsonResponse(response_data)
         except:
             response_data['status'] = 'BAD'
             print(response_data['status'])
+            return JsonResponse(response_data)
+
+
+class UserCartPage(View, LoginRequiredMixin):
+    """Класс страницы просмотра корзины пользователя"""
+    def get(self, request):
+        try:
+            basket_current_user = BasketUser.objects.filter(user=request.user).distinct()
+            if len(basket_current_user) != 0:
+                products_in_cart = basket_current_user[0].products.all()
+
+                return render(request, 'user_cart_page.html', {'products_in_cart': products_in_cart,
+                                                               'is_empty_cart': False})
+            else:
+                return render(request, 'user_cart_page.html', {'is_empty_cart': True})
+        except:
+            return render(request, 'user_cart_page.html')
+
+
+class DeleteProductInCart(View, LoginRequiredMixin):
+    def post(self, request):
+        response_data = {}
+        try:
+            product = Product.objects.get(pk=request.POST.get('product_id'))
+            product_in_cart = BasketUser.objects.filter(products=product)[0]
+            print(request.POST)
+            print(product_in_cart)
+            # product_in_cart.delete()
+            response_data['status'] = 'OK'
+            response_data['id'] = request.POST.get('product_id')
+            return JsonResponse(response_data)
+
+        except:
+            response_data['status'] = 'BAD'
             return JsonResponse(response_data)

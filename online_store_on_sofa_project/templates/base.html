@@ -25,6 +25,7 @@
                     {% if user.is_authenticated %}
                     <ul class="nav navbar-nav navbar-right">
                         <li><a href="{% url 'change_password' %}"><span class="glyphicon glyphicon-user"></span>Hi, {{ user.username }}!</a></li>
+                        <li><a href="{% url 'user_cart_page'%}"><span class="glyphicon glyphicon-shopping-cart"></span>Your cart</a></li>
                         <li><a href="{% url 'logout' %}"><span class="glyphicon glyphicon-log-in"></span>Logout</a></li>
                     </ul>
                     {% else %}
