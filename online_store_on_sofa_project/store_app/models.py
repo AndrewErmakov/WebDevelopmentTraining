@@ -87,7 +87,7 @@ class WarehouseProducts(models.Model):
         return self.product.title + ' с количеством ' + str(self.count_products)
 
 
-class BasketUser(models.Model):
+class CartUser(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name='Никнейм покупателя')
     products = models.ManyToManyField(Product, verbose_name='Товары в корзине')
 
@@ -97,4 +97,18 @@ class BasketUser(models.Model):
         ordering = ['user']
 
     def __str__(self):
-        return self.user.username
+        return 'Корзина пользователя с товарами ' + self.user.username
+
+
+class ProductInCart(models.Model):
+    cart_user = models.ForeignKey(CartUser, on_delete=models.CASCADE,
+                                  verbose_name='Никнейм пользователя - владельца корзины', blank=True, null=True)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name='Название товара')
+    count_product_in_cart = models.PositiveIntegerField(default=1, verbose_name='Количество данного товара')
+
+    def __str__(self):
+        return f'В корзине {self.cart_user.user.username} лежит товар {self.product.title} в количестве {self.count_product_in_cart}'
+
+    class Meta:
+        verbose_name_plural = 'Количество определенного товара в корзине'
+        ordering = ['cart_user']

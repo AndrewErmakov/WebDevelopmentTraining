@@ -4,7 +4,7 @@ $(document).on('submit', '#add_product_to_basket',function(e){
             type:'POST',
             url: $("#add_product_to_basket").prop('action'),
             data:{
-                count_products:$('#number').val(),
+                count_product:$('#number').val(),
                 product_id:$('#product_id_to_basket').val(),
                 csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
                 action: 'post'

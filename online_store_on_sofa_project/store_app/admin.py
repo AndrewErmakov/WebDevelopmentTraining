@@ -26,10 +26,16 @@ class WarehouseProductsAdmin(admin.ModelAdmin):
     search_fields = ('product', 'count_products',)
 
 
-class BasketUserAdmin(admin.ModelAdmin):
+class CartUserAdmin(admin.ModelAdmin):
     list_display = ['user']
     list_display_links = ['user']
     search_fields = ('products', 'user',)
+
+
+class CountProductInCartAdmin(admin.ModelAdmin):
+    list_display = ['product', 'count_product_in_cart', 'cart_user']
+    list_display_links = ['product']
+    search_fields = ('product', 'count_product_in_cart',)
 
 
 admin.site.register(Product, ProductAdmin)
@@ -37,5 +43,5 @@ admin.site.register(Rubric)
 admin.site.register(ImageProduct, ImageProductAdmin)
 admin.site.register(Comment, CommentAdmin)
 admin.site.register(WarehouseProducts, WarehouseProductsAdmin)
-admin.site.register(BasketUser, BasketUserAdmin)
-
+admin.site.register(CartUser, CartUserAdmin)
+admin.site.register(ProductInCart, CountProductInCartAdmin)

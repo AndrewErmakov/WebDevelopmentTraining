@@ -23,32 +23,41 @@
             </p>
             {% else %}
             <h2>Ваша корзина.</h2>
-            <h3>Количество товаров в корзине: {{ products_in_cart.count }}</h3>
             <div class="jumbotron" id="products_in_cart">
                 {% for product in products_in_cart %}
-                <div class="row align-items-start" id="product_{{ forloop.counter }}">
+                <div class="row align-items-start" id="container_{{ product.pk }}">
                     <div class="col-4 col-sm-4">
                         <img class="img-thumbnail" src="{{ product.imageproduct_set.first.image.url }}" alt="{{ product.title }}" width="150" height="150">
                     </div>
                     <div class="col-6 col-sm-6">
                         <p class="text-left"><a href="{% url 'product_details' product.pk %}">{{ product.title }}</a></p>
-                        <p class="text-left">{{ product.price }}</p>
+
+                        {% for key, value in count_each_product.items %}
+                            {% if product.pk == key %}
+                            <p class="text-left">Количество: {{ value.0 }}</p>
+                            <p class="text-left">{{ value.1 }}</p>
+                            {% endif %}
+                        {% endfor %}
+
                     </div>
                      <div class="col-2 col-sm-2">
-                        <form action="delete_product_in_cart" id="delete_product_in_cart_form" method="POST">
+                        <form action="delete_product_in_cart" class="delete_product_in_cart_form" method="POST">
                             {% csrf_token %}
-                            <button type="submit"><span class="glyphicon glyphicon-flag"></span>Удалить</button>
-                            <input type="hidden" name="product_id" value="{{ product.id }}" id="product_id">
+                            <button type="submit" id="delete_product_{{ product.pk }}"><span class="glyphicon glyphicon-flag"></span>Удалить</button>
+                            <input type="hidden" name="product_id" value="{{ product.id }}" id="product_{{ product.id }}" class="product_id">
                         </form>
 
                     </div>
+
                 </div>
 
                 <hr>
                 {% endfor %}
+                    <h2>Итоговая сумма</h2>
+                <h2 class="total_sum">{{ total_sum }}</h2>
+            </div>
 
             {% endif %}
-            </div>
 
             {% else %}
             <h2>Вы не вошли в свой аккаунт.</h2>
@@ -56,6 +65,7 @@
                 Чтобы войти в свой аккаунт, пройдите на
                 <a href="{% url 'login' %}">страницу входа</a>
             </p>
+
             {% endif %}
         </div>
         <div class="col-sm-2 sidenav">

@@ -1,9 +1,11 @@
+from pprint import pprint
+
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import AnonymousUser
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.views import View
-from .models import Product, Rubric, Comment, WarehouseProducts, BasketUser
+from .models import Product, Rubric, Comment, WarehouseProducts, CartUser, ProductInCart
 from .forms import *
 
 
@@ -138,40 +140,58 @@ def custom_handler404(request, exception):
     return render(request, 'error404.html')
 
 
-class AddProductToBasket(View, LoginRequiredMixin):
+class AddProductToCart(View, LoginRequiredMixin):
     """Класс добавления товара в корзину пользователя"""
+
     def post(self, request):
         response_data = {}
         try:
-            basket_current_user = BasketUser.objects.filter(user=request.user)
-            if len(basket_current_user) != 0:
-                basket_current_user[0].products.add(Product.objects.get(pk=request.POST.get('product_id')))
+            cart_current_user = CartUser.objects.filter(user=request.user)
+            if len(cart_current_user) != 0:
+                product_to_add_cart = Product.objects.get(pk=request.POST.get('product_id'))
+                cart_current_user[0].products.add(product_to_add_cart)
+                cart_current_user[0].productincart_set.create(product=product_to_add_cart,
+                                                              count_product_in_cart=request.POST.get('count_product'))
             else:
-                basket_current_user = BasketUser(user=request.user)
-                basket_current_user.save()
-                basket_current_user.products.add(Product.objects.get(pk=request.POST.get('product_id')))
+                cart_current_user = CartUser(user=request.user)
+                cart_current_user.save()
+                cart_current_user.products.add(Product.objects.get(pk=request.POST.get('product_id')))
 
             response_data['status'] = 'OK'
             return JsonResponse(response_data)
-        except:
+        except Exception as e:
+            print(e)
             response_data['status'] = 'BAD'
-            print(response_data['status'])
             return JsonResponse(response_data)
 
 
 class UserCartPage(View, LoginRequiredMixin):
     """Класс страницы просмотра корзины пользователя"""
+
     def get(self, request):
         try:
-            basket_current_user = BasketUser.objects.filter(user=request.user).distinct()
-            if len(basket_current_user) != 0:
-                products_in_cart = basket_current_user[0].products.all()
+            cart_current_user = CartUser.objects.filter(user=request.user)
+            if len(cart_current_user) != 0:
+                cart_current_user = cart_current_user[0]
+                products_in_cart = cart_current_user.products.all()
+                count_each_product = {}
+                total_sum = 0
+                for product in products_in_cart:
+                    product_in_cart = ProductInCart.objects.filter(cart_user=cart_current_user,
+                                                                   product=product)[0]
+                    count_each_product[product.pk] = [product_in_cart.count_product_in_cart]
+                    count_each_product[product.pk].append(product_in_cart.count_product_in_cart * product.price)
+                    total_sum += product_in_cart.count_product_in_cart * product.price
 
+                pprint(count_each_product)
                 return render(request, 'user_cart_page.html', {'products_in_cart': products_in_cart,
-                                                               'is_empty_cart': False})
+                                                               'is_empty_cart': False,
+                                                               'count_each_product': count_each_product,
+                                                               'total_sum': total_sum})
             else:
                 return render(request, 'user_cart_page.html', {'is_empty_cart': True})
-        except:
+        except Exception as e:
+            print(e)
             return render(request, 'user_cart_page.html')
 
 
@@ -180,14 +200,12 @@ class DeleteProductInCart(View, LoginRequiredMixin):
         response_data = {}
         try:
             product = Product.objects.get(pk=request.POST.get('product_id'))
-            product_in_cart = BasketUser.objects.filter(products=product)[0]
-            print(request.POST)
-            print(product_in_cart)
-            # product_in_cart.delete()
+            cart_user = request.user.cartuser.products.remove(product)
             response_data['status'] = 'OK'
             response_data['id'] = request.POST.get('product_id')
             return JsonResponse(response_data)
 
-        except:
+        except Exception as e:
+            print(e)
             response_data['status'] = 'BAD'
             return JsonResponse(response_data)

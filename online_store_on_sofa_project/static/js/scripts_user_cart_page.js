@@ -1,17 +1,20 @@
-$(document).on('submit', '#delete_product_in_cart_form',function(e){
+$(document).on('submit', '.delete_product_in_cart_form',function(e){
+     console.log(e.target);
      e.preventDefault();
      $.ajax({
             type:'POST',
-            url: $("#delete_product_in_cart_form").prop('action'),
+            url: $(".delete_product_in_cart_form").prop('action'),
             data:{
-                product_id:$('#product_id').val(),
+                product_id:$(e.target).find('.product_id').first().val(),
                 csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
                 action: 'post'
             },
             success:function(json){
                     if (json.status === 'OK'){
                         alert('delete');
-                        /*$("#product_" + json.id).hide();*/
+                        $("#container_" + json.id).hide();
+                        var total_sum = $('.total_sum').val();
+                        alert(total_sum);
                     }
                     else{
                         alert('not delete');
@@ -22,3 +25,4 @@ $(document).on('submit', '#delete_product_in_cart_form',function(e){
     }
     });
 });
+
