@@ -15,7 +15,7 @@ class ImageProductAdmin(admin.ModelAdmin):
 
 
 class CommentAdmin(admin.ModelAdmin):
-    list_display = ('product', 'text_comment', 'author_comment', 'rating', 'data_comment')
+    list_display = ('product', 'text_comment', 'author_comment', 'rating', 'date_comment')
     list_display_links = ['product', 'text_comment']
     search_fields = ('product', 'text_comment', 'author_comment', 'rating',)
 
@@ -37,6 +37,9 @@ class CountProductInCartAdmin(admin.ModelAdmin):
     list_display_links = ['product']
     search_fields = ('product', 'count_product_in_cart',)
 
+
+class OrderAdmin(admin.ModelAdmin):
+    list_display = ['num_order', 'date_order', 'buyer_email', 'name_recipient', 'surname_recipient']
 
 admin.site.register(Product, ProductAdmin)
 admin.site.register(Rubric)

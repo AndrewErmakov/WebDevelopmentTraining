@@ -1,5 +1,4 @@
 $(document).on('submit', '.delete_product_in_cart_form',function(e){
-     console.log(e.target);
      e.preventDefault();
      $.ajax({
             type:'POST',
@@ -11,10 +10,12 @@ $(document).on('submit', '.delete_product_in_cart_form',function(e){
             },
             success:function(json){
                     if (json.status === 'OK'){
-                        alert('delete');
+                        console.log('delete');
                         $("#container_" + json.id).hide();
-                        var total_sum = $('.total_sum').val();
-                        alert(total_sum);
+                        var total_sum = $('.total_sum').text();
+                        var price_product = $('#price_' + json.id).text();
+                        total_sum = +total_sum - +price_product;
+                        $('.total_sum').text(total_sum);
                     }
                     else{
                         alert('not delete');

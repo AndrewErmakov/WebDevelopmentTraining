@@ -35,7 +35,7 @@
                         {% for key, value in count_each_product.items %}
                             {% if product.pk == key %}
                             <p class="text-left">Количество: {{ value.0 }}</p>
-                            <p class="text-left">{{ value.1 }}</p>
+                            <p class="text-left" id="price_{{ product.pk }}">{{ value.1 }}</p>
                             {% endif %}
                         {% endfor %}
 
@@ -43,7 +43,7 @@
                      <div class="col-2 col-sm-2">
                         <form action="delete_product_in_cart" class="delete_product_in_cart_form" method="POST">
                             {% csrf_token %}
-                            <button type="submit" id="delete_product_{{ product.pk }}"><span class="glyphicon glyphicon-flag"></span>Удалить</button>
+                            <button type="submit" id="delete_product_{{ product.pk }}"><span class="glyphicon glyphicon-trash"></span>Удалить</button>
                             <input type="hidden" name="product_id" value="{{ product.id }}" id="product_{{ product.id }}" class="product_id">
                         </form>
 
@@ -56,7 +56,7 @@
                     <h2>Итоговая сумма</h2>
                 <h2 class="total_sum">{{ total_sum }}</h2>
             </div>
-
+            <button type="button" onclick="location.href='{% url 'ordering' %}'">Оформить заказ</button>
             {% endif %}
 
             {% else %}

@@ -50,7 +50,7 @@ class Comment(models.Model):
     rating = models.PositiveSmallIntegerField(validators=[validators.MaxValueValidator(5)], verbose_name='Оценка')
     product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name='Товар')
     author_comment = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Пользователь')
-    data_comment = models.DateTimeField(auto_now_add=True, db_index=True, verbose_name='Дата комментирования')
+    date_comment = models.DateTimeField(auto_now_add=True, db_index=True, verbose_name='Дата комментирования')
 
     class Meta:
         verbose_name_plural = 'Комментарии'
@@ -101,14 +101,43 @@ class CartUser(models.Model):
 
 
 class ProductInCart(models.Model):
+    """Модель одной позиции товара в корзине"""
     cart_user = models.ForeignKey(CartUser, on_delete=models.CASCADE,
                                   verbose_name='Никнейм пользователя - владельца корзины', blank=True, null=True)
     product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name='Название товара')
     count_product_in_cart = models.PositiveIntegerField(default=1, verbose_name='Количество данного товара')
 
     def __str__(self):
-        return f'В корзине {self.cart_user.user.username} лежит товар {self.product.title} в количестве {self.count_product_in_cart}'
+        return f'В корзине {self.cart_user.user.username} лежит товар {self.product.title} в количестве ' \
+               f'{self.count_product_in_cart}'
 
     class Meta:
         verbose_name_plural = 'Количество определенного товара в корзине'
         ordering = ['cart_user']
+
+
+class Recipient(models.Model):
+    name_recipient = models.CharField(max_length=50, verbose_name='Имя получателя заказа')
+    surname_recipient = models.CharField(max_length=50, verbose_name='Фамилия получателя заказа')
+    phone_recipient = models.CharField(max_length=14, verbose_name='Номер телефона получателя заказа')
+
+
+class Order(models.Model):
+    """Модель оформленного заказа"""
+    recipient = models.ForeignKey(Recipient, on_delete=models.CASCADE, verbose_name='Получатель')
+    num_order = models.CharField(max_length=20, verbose_name='Номер заказа', blank=True, null=True, unique=True)
+    date_order = models.DateTimeField(auto_now_add=True, db_index=True, verbose_name='Дата заказа')
+    buyer_email = models.EmailField(verbose_name='Электронная почта покупателя')
+    payment_method = models.CharField(max_length=30, verbose_name='Способ оплаты')
+    cart_products = models.ForeignKey(CartUser, on_delete=models.DO_NOTHING, verbose_name='Корзина покупателя')
+    total_sum = models.DecimalField(max_digits=9, decimal_places=2, blank=True, null=True,
+                                    verbose_name='Итоговая цена заказа',
+                                    validators=[validators.MinValueValidator(1), validators.MaxValueValidator(1000000)])
+
+    def __str__(self):
+        return f'Заказ №{str(self.pk).zfill(6)}.'
+
+    class Meta:
+        verbose_name_plural = 'Заказы'
+        verbose_name = 'Заказ'
+        ordering = ['cart_products', 'date_order']
