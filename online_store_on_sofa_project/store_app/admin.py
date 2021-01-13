@@ -41,6 +41,7 @@ class CountProductInCartAdmin(admin.ModelAdmin):
 class OrderAdmin(admin.ModelAdmin):
     list_display = ['num_order', 'date_order', 'buyer_email', 'name_recipient', 'surname_recipient']
 
+
 admin.site.register(Product, ProductAdmin)
 admin.site.register(Rubric)
 admin.site.register(ImageProduct, ImageProductAdmin)

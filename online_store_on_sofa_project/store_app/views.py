@@ -1,12 +1,10 @@
-from pprint import pprint
-
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.models import AnonymousUser
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.views import View
-from .models import Product, Rubric, Comment, WarehouseProducts, CartUser, ProductInCart
+
 from .forms import *
+from .models import Rubric, WarehouseProducts, CartUser, ProductInCart
 
 
 class HomePage(View):
@@ -131,7 +129,8 @@ class AddNewComment(LoginRequiredMixin, View):
             response_data['user'] = request.user.username
             return JsonResponse(response_data)
 
-        except:
+        except Exception as e:
+            print(e)
             response_data['status'] = 'BAD'
             return JsonResponse(response_data)
 
@@ -146,7 +145,14 @@ class AddProductToCart(View, LoginRequiredMixin):
     def post(self, request):
         response_data = {}
         product_to_add_cart = Product.objects.get(pk=request.POST.get('product_id'))
+
         try:
+            product_in_warehouse = WarehouseProducts.objects.get(product=product_to_add_cart)
+            """Проверка если пользователь ввел число, превышающее кол-во товара на складе,
+            если превышает, то страница остается без изменений, в корзину ничего не добавляется"""
+            if product_in_warehouse.count_products < int(request.POST.get('count_product')):
+                response_data['status'] = 'MORE'
+                return JsonResponse(response_data)
 
             cart_current_user = CartUser.objects.filter(user=request.user)
             if len(cart_current_user) != 0:
@@ -174,6 +180,11 @@ class AddProductToCart(View, LoginRequiredMixin):
                 cart_current_user.products.add(Product.objects.get(pk=request.POST.get('product_id')))
                 cart_current_user.productincart_set.create(product=product_to_add_cart,
                                                            count_product_in_cart=request.POST.get('count_product'))
+
+            """Кол-во этого товара теперь на складе уменьшается"""
+
+            product_in_warehouse.count_products -= int(request.POST.get('count_product'))
+            product_in_warehouse.save()
 
             response_data['status'] = 'OK'
             return JsonResponse(response_data)
@@ -212,11 +223,25 @@ class UserCartPage(View, LoginRequiredMixin):
 
 
 class DeleteProductInCart(View, LoginRequiredMixin):
+    """Удаление товара (только одной позиции!!!) из корзины"""
+
     def post(self, request):
         response_data = {}
         try:
             product = Product.objects.get(pk=request.POST.get('product_id'))
-            cart_user = request.user.cartuser.products.remove(product)
+
+            """Удаление товара из таблицы CartUser"""
+            request.user.cartuser.products.remove(product)
+
+            """Удаление из таблицы ProductInCart"""
+            ProductInCart.objects.get(cart_user=CartUser.objects.get(user=request.user),
+                                      product=product).delete()
+
+            """Восполнение запасов на складе данной позициии товара"""
+            product_in_warehouse = WarehouseProducts.objects.get(product=product)
+            product_in_warehouse.count_products += int(request.POST.get('count_products')[-1])
+            product_in_warehouse.save()
+
             response_data['status'] = 'OK'
             response_data['id'] = request.POST.get('product_id')
             return JsonResponse(response_data)

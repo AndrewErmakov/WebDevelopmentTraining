@@ -74,7 +74,10 @@
                     {% endif %}
 
                     {% if count_product %}
-                    <p class="text-left"><kbd>Товар в наличии в количестве экземпляров на складе:</kbd><code>{{ count_product }}</code></p>
+                    <p class="text-left" id="count">
+                        <kbd>Товар в наличии в количестве экземпляров на складе:</kbd>
+                        <code id="count_in_warehouse">{{ count_product }}</code>
+                    </p>
                     {% if user.is_authenticated %}
                     <form method="POST" action="{% url 'add_product_to_basket' %}" class="add_product_to_basket" id="add_product_to_basket">
                         {% csrf_token %}

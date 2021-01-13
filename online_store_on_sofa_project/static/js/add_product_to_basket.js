@@ -15,7 +15,16 @@ $(document).on('submit', '#add_product_to_basket',function(e){
                         if (document.getElementById("go_to_basket") == null){
                             $('#main_info_product').append('<input id="go_to_basket" type="button" value="Перейти в корзину">');
                         }
+                        var count_in_warehouse = $('#count_in_warehouse').text();
+                        var count_to_cart = $('#number').val();
+                        count_in_warehouse = +count_in_warehouse - +count_to_cart;
+                        $('#count_in_warehouse').text(count_in_warehouse);
+
                     }
+                    else if(json.status === 'MORE'){
+                        alert('too much');
+                    }
+
                     else{
                         alert('do not add to basket');
                     }

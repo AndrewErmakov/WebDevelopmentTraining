@@ -34,7 +34,7 @@
 
                         {% for key, value in count_each_product.items %}
                             {% if product.pk == key %}
-                            <p class="text-left">Количество: {{ value.0 }}</p>
+                            <p class="text-left" id="count_{{ product.pk }}">Количество: {{ value.0 }}</p>
                             <p class="text-left" id="price_{{ product.pk }}">{{ value.1 }}</p>
                             {% endif %}
                         {% endfor %}
