@@ -23,4 +23,4 @@ urlpatterns = [
     path('captcha/', include('captcha.urls')),
 ]
 
-handler404 = 'store_app.views.custom_handler404'
+# handler404 = 'store_app.views.custom_handler404'

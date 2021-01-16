@@ -1,5 +1,5 @@
 from django.forms import ModelForm
-from .models import Product, ImageProduct, Comment
+from .models import Product, ImageProduct
 
 
 class AddNewProductBySuperuserForm(ModelForm):

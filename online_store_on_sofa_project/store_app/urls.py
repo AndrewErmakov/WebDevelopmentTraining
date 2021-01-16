@@ -19,6 +19,7 @@ urlpatterns = [
     path('increase_count_products', IncreaseCountProducts.as_view(), name='increase_count_products'),
     # ordering
     path('ordering', Ordering.as_view(), name='ordering'),
+    path('order_created/<int:encrypted_order_num>/<int:key>/', OrderCreatedView.as_view(), name='order_created')
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 

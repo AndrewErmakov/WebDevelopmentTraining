@@ -1,3 +1,5 @@
+import random
+
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
@@ -345,16 +347,42 @@ class Ordering(View, LoginRequiredMixin):
             cart_user = request.user.cartuser
             total_sum = 0
             for product in request.user.cartuser.products.all():
-                count_product = ProductInCart.objects.get(product=product, cart_user=cart_user).count_product_in_cart
-                total_sum += count_product * product.price
+                product_in_cart = ProductInCart.objects.get(product=product, cart_user=cart_user)
+                total_sum += product_in_cart.count_product_in_cart * product.price
                 """Теперь сохраним товары в таблицу БД ProductsInOrder"""
                 ProductsInOrder.objects.create(order=new_order,
                                                product=product,
-                                               count_product_in_order=count_product)
+                                               count_product_in_order=product_in_cart.count_product_in_cart)
+
+                """Удалим товар из таблицы ProductsInCart"""
+                product_in_cart.delete()
+
             new_order.total_sum = total_sum
             new_order.save()
 
-            return redirect('home')
+            """Очистим таблицу пользователя"""
+            cart_user.delete()
+
+            """Закодируем наш номер заказа и передадим ему в url страницы о создании заказа"""
+            encryption_key = random.randint(280, 570)
+            print(encryption_key)
+            encrypted_order_number = new_order.pk + encryption_key
+            return redirect('order_created',
+                            encrypted_order_num=encrypted_order_number,
+                            key=encryption_key)
         except Exception as e:
             print(e)
             return redirect('user_cart_page')
+
+
+class OrderCreatedView(View, LoginRequiredMixin):
+    """Класс просмотра страницы о создании заказа"""
+    def get(self, request, encrypted_order_num, key):
+        try:
+            decoded_order_number = str(encrypted_order_num - key).zfill(6)
+            return render(request, 'order_created.html',
+                          {'num':decoded_order_number})
+        except Exception as e:
+            print(e)
+            return redirect('home')
+
