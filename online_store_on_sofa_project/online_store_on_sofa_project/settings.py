@@ -38,9 +38,11 @@ INSTALLED_APPS = [
     'captcha',  # simple captcha
     'g_recaptcha',  # recaptcha
 
+
     # my apps
     'store_app',
     'accounts_app',
+
 ]
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'

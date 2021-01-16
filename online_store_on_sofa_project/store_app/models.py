@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
 from django.core import validators
 from django.db import models
+from django.utils import timezone
 
 
 class Product(models.Model):
@@ -87,6 +88,9 @@ class WarehouseProducts(models.Model):
         return self.product.title + ' с количеством ' + str(self.count_products)
 
 
+"""Модели, относящиеся к корзине"""
+
+
 class CartUser(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name='Никнейм покупателя')
     products = models.ManyToManyField(Product, verbose_name='Товары в корзине')
@@ -116,7 +120,11 @@ class ProductInCart(models.Model):
         ordering = ['cart_user']
 
 
+"""Модели, относящиеся к заказу"""
+
+
 class Recipient(models.Model):
+    """Модель получателя заказа"""
     name_recipient = models.CharField(max_length=50, verbose_name='Имя получателя заказа')
     surname_recipient = models.CharField(max_length=50, verbose_name='Фамилия получателя заказа')
     phone_recipient = models.CharField(max_length=14, verbose_name='Номер телефона получателя заказа')
@@ -126,13 +134,14 @@ class Order(models.Model):
     """Модель оформленного заказа"""
     recipient = models.ForeignKey(Recipient, on_delete=models.CASCADE, verbose_name='Получатель')
     num_order = models.CharField(max_length=20, verbose_name='Номер заказа', blank=True, null=True, unique=True)
-    date_order = models.DateTimeField(auto_now_add=True, db_index=True, verbose_name='Дата заказа')
+    date_order = models.DateField(db_index=True, verbose_name='Дата получения заказа')
     buyer_email = models.EmailField(verbose_name='Электронная почта покупателя')
     payment_method = models.CharField(max_length=30, verbose_name='Способ оплаты')
     cart_products = models.ForeignKey(CartUser, on_delete=models.DO_NOTHING, verbose_name='Корзина покупателя')
     total_sum = models.DecimalField(max_digits=9, decimal_places=2, blank=True, null=True,
                                     verbose_name='Итоговая цена заказа',
                                     validators=[validators.MinValueValidator(1), validators.MaxValueValidator(1000000)])
+    created_at = models.DateTimeField(auto_now=True, verbose_name='Дата и время создания зказа', db_index=True)
 
     def __str__(self):
         return f'Заказ №{str(self.pk).zfill(6)}.'

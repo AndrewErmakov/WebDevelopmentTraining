@@ -42,3 +42,7 @@ button.captcha-refresh:active {
 #product_image {
     height: 300px;
 }
+
+#change_count{
+    display: inline-block;
+}

@@ -34,7 +34,22 @@
 
                         {% for key, value in count_each_product.items %}
                             {% if product.pk == key %}
-                            <p class="text-left" id="count_{{ product.pk }}">Количество: {{ value.0 }}</p>
+                            <p class="text-left">
+                                Количество:
+                                <form method="POST" action="reduce_count_products" class="reduce_count_products_form" id="change_count">
+                                    {% csrf_token %}
+                                    <button type="submit" id="reduce_num">-</button>
+                                    <input type="hidden" name="product_id" value="{{ product.id }}" id="product_{{ product.id }}" class="product_id">
+                                </form>
+                                <form id="change_count" class="count_{{ product.pk }}">
+                                    {{ value.0 }}
+                                </form>
+
+                                <form method="POST" action="increase_count_products" class="increase_count_products_form" id="change_count">
+                                    <button type="submit" id="increase_num">+</button>
+                                    <input type="hidden" name="product_id" value="{{ product.id }}" id="product_{{ product.id }}" class="product_id">
+                                </form>
+                            </p>
                             <p class="text-left" id="price_{{ product.pk }}">{{ value.1 }}</p>
                             {% endif %}
                         {% endfor %}
@@ -53,7 +68,7 @@
 
                 <hr>
                 {% endfor %}
-                    <h2>Итоговая сумма</h2>
+                <h2>Итоговая сумма</h2>
                 <h2 class="total_sum">{{ total_sum }}</h2>
             </div>
             <button type="button" onclick="location.href='{% url 'ordering' %}'">Оформить заказ</button>

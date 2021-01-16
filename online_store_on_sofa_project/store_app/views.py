@@ -4,7 +4,7 @@ from django.shortcuts import render, redirect
 from django.views import View
 
 from .forms import *
-from .models import Rubric, WarehouseProducts, CartUser, ProductInCart
+from .models import *
 
 
 class HomePage(View):
@@ -199,6 +199,8 @@ class UserCartPage(View, LoginRequiredMixin):
 
     def get(self, request):
         try:
+            cart_current_user = CartUser.objects.get(user=request.user)
+            print(cart_current_user.products)
             cart_current_user = CartUser.objects.filter(user=request.user)
             if len(cart_current_user) != 0:
                 cart_current_user = cart_current_user[0]
@@ -239,7 +241,7 @@ class DeleteProductInCart(View, LoginRequiredMixin):
 
             """Восполнение запасов на складе данной позициии товара"""
             product_in_warehouse = WarehouseProducts.objects.get(product=product)
-            product_in_warehouse.count_products += int(request.POST.get('count_products')[-1])
+            product_in_warehouse.count_products += int(request.POST.get('count_products').split()[0])
             product_in_warehouse.save()
 
             response_data['status'] = 'OK'
@@ -252,11 +254,84 @@ class DeleteProductInCart(View, LoginRequiredMixin):
             return JsonResponse(response_data)
 
 
+class ReduceCountProducts(View, LoginRequiredMixin):
+    """Уменьшение числа одной позиции товара в корзине на 1"""
+    def post(self, request):
+        response_data = {}
+        try:
+            product = Product.objects.get(pk=request.POST.get('product_id'))
+
+            product_in_cart = ProductInCart.objects.get(cart_user=CartUser.objects.get(user=request.user),
+                                                        product=product)
+
+            if product_in_cart.count_product_in_cart == 1:
+                response_data['status'] = 'ENOUGH'
+                return JsonResponse(response_data)
+
+            product_in_cart.count_product_in_cart -= 1
+            product_in_cart.save()
+
+            """Восполнение запасов на складе данной позициии товара"""
+            product_in_warehouse = WarehouseProducts.objects.get(product=product)
+            product_in_warehouse.count_products += 1
+            product_in_warehouse.save()
+
+            response_data['status'] = 'OK'
+            response_data['id'] = request.POST.get('product_id')
+            response_data['price'] = product.price
+            return JsonResponse(response_data)
+
+        except Exception as e:
+            print(e)
+            response_data['status'] = 'BAD'
+            return JsonResponse(response_data)
+
+
+class IncreaseCountProducts(View, LoginRequiredMixin):
+    """Увеличение числа одной позиции товара в корзине на 1"""
+    def post(self, request):
+        response_data = {}
+        try:
+            product = Product.objects.get(pk=request.POST.get('product_id'))
+
+            product_in_cart = ProductInCart.objects.get(cart_user=CartUser.objects.get(user=request.user),
+                                                        product=product)
+
+            """Проверка наличия еще 1 экземпляра товара"""
+            product_in_warehouse = WarehouseProducts.objects.get(product=product)
+            if product_in_warehouse.count_products >= 1:
+                """Товар на складе есть"""
+                product_in_cart.count_product_in_cart += 1
+                product_in_cart.save()
+
+                """Уменьшение запасов на складе данной позициии товара на 1"""
+                product_in_warehouse.count_products -= 1
+                product_in_warehouse.save()
+
+                response_data['status'] = 'OK'
+                response_data['id'] = request.POST.get('product_id')
+                response_data['price'] = product.price
+
+            else:
+                """Товар на складе нет"""
+                response_data['status'] = 'Not available'
+
+            return JsonResponse(response_data)
+        except Exception as e:
+            print(e)
+            response_data['status'] = 'BAD'
+            return JsonResponse(response_data)
+
+
 class Ordering(View, LoginRequiredMixin):
     def get(self, request):
         try:
             current_user = request.user
-            cart_current_user = CartUser.objects.filter(user=current_user)[0]
+            recipient = Recipient.objects.create(
+                name_recipient='',
+                surname_recipient='',
+                phone_recipient='',
+            )
 
             return render(request, 'ordering.html', {'user': current_user})
         except Exception as e:
