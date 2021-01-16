@@ -17,31 +17,36 @@
 
         <div class="col-sm-8 text-left">
             <h1>Оформление заказа</h1><hr>
-            <div id="recipient_contacts" class="well">
-                <h2><b>Получатель</b></h2>
-                <input type="checkbox" id="who_receive_order"/> Получать буду не я <br>
-                <input required type="text" class="name_recipient" placeholder="Имя" value="{{ user.first_name }}"></p>
-                <input required type="text" class="surname_recipient" placeholder="Фамилия" value="{{ user.last_name }}"></p>
-                <input required type="text" class="phone" placeholder="Телефон"></p>
-            </div>
+            <form method="POST" action="{% url 'ordering' %}">
+                {% csrf_token %}
+                <div id="recipient_contacts" class="well">
+                    <h2><b>Получатель</b></h2>
+                    <input type="checkbox" name="is_user_receiver" id="who_receive_order" value="is_user_receiver"/> Получать буду не я <br>
+                    <input required name="name_recipient" class="name_recipient" type="text" placeholder="Имя" value="{{ user.first_name }}"></p>
+                    <input required type="text" name="surname_recipient" class="surname_recipient" placeholder="Фамилия" value="{{ user.last_name }}"></p>
+                    <input required type="text" name="phone" class="phone" placeholder="Телефон"></p>
+                </div>
 
-            <div id="payment_method" class="well">
-                <h2><b>Способ оплаты (при получении)</b></h2>
-                <select class="form-control" id="choice_payment_method">
-                    <option value="Наличные">Наличные</option>
-                    <option value="Безналичный расчет">Безналичный расчет</option>
-                </select>
-            </div>
+                <div id="payment_method" class="well">
+                    <h2><b>Способ оплаты (при получении)</b></h2>
+                    <select required class="form-control" id="choice_payment_method" name="payment_method">
+                        <option value="Наличные">Наличные</option>
+                        <option value="Безналичный расчет">Безналичный расчет</option>
+                    </select>
+                </div>
 
-            <div id="method_receiving_order" class="well">
-                <h2><b>Способ получения</b></h2>
-                <p>
-                    На данный момент доступен только самовывоз. Приносим свои извинения за предоставленное неудобство.
-                </p>
+                <div id="method_receiving_order" class="well">
+                    <h2><b>Способ получения</b></h2>
+                    <p>
+                        На данный момент доступен только самовывоз. Приносим свои извинения за предоставленное неудобство.
+                    </p>
 
-            </div>
+                </div>
 
-            <input type="submit" value="Отправить заказ" />
+                <input type="submit" value="Отправить заказ" />
+            </form>
+
+
         </div>
 
 

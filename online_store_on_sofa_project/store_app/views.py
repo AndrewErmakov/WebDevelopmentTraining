@@ -199,8 +199,6 @@ class UserCartPage(View, LoginRequiredMixin):
 
     def get(self, request):
         try:
-            cart_current_user = CartUser.objects.get(user=request.user)
-            print(cart_current_user.products)
             cart_current_user = CartUser.objects.filter(user=request.user)
             if len(cart_current_user) != 0:
                 cart_current_user = cart_current_user[0]
@@ -256,6 +254,7 @@ class DeleteProductInCart(View, LoginRequiredMixin):
 
 class ReduceCountProducts(View, LoginRequiredMixin):
     """Уменьшение числа одной позиции товара в корзине на 1"""
+
     def post(self, request):
         response_data = {}
         try:
@@ -265,7 +264,7 @@ class ReduceCountProducts(View, LoginRequiredMixin):
                                                         product=product)
 
             if product_in_cart.count_product_in_cart == 1:
-                response_data['status'] = 'ENOUGH'
+                response_data['status'] = 'знерщUGH'
                 return JsonResponse(response_data)
 
             product_in_cart.count_product_in_cart -= 1
@@ -289,6 +288,7 @@ class ReduceCountProducts(View, LoginRequiredMixin):
 
 class IncreaseCountProducts(View, LoginRequiredMixin):
     """Увеличение числа одной позиции товара в корзине на 1"""
+
     def post(self, request):
         response_data = {}
         try:
@@ -326,14 +326,35 @@ class IncreaseCountProducts(View, LoginRequiredMixin):
 class Ordering(View, LoginRequiredMixin):
     def get(self, request):
         try:
-            current_user = request.user
-            recipient = Recipient.objects.create(
-                name_recipient='',
-                surname_recipient='',
-                phone_recipient='',
-            )
-
-            return render(request, 'ordering.html', {'user': current_user})
+            return render(request, 'ordering.html', {'user': request.user})
         except Exception as e:
             print(e)
             return redirect('home', {'need_warn': True})
+
+    def post(self, request):
+        try:
+            new_recipient = Recipient.objects.create(name_recipient=request.POST.get('name_recipient'),
+                                                     surname_recipient=request.POST.get('surname_recipient'),
+                                                     phone_recipient=request.POST.get('phone'))
+            new_order = Order.objects.create(recipient=new_recipient,
+                                             buyer_email=request.user.email,
+                                             payment_method=request.POST.get('payment_method'))
+            new_order.num_order = str(new_order.pk).zfill(6)
+
+            """Находим корзину пользователя и товары в ней"""
+            cart_user = request.user.cartuser
+            total_sum = 0
+            for product in request.user.cartuser.products.all():
+                count_product = ProductInCart.objects.get(product=product, cart_user=cart_user).count_product_in_cart
+                total_sum += count_product * product.price
+                """Теперь сохраним товары в таблицу БД ProductsInOrder"""
+                ProductsInOrder.objects.create(order=new_order,
+                                               product=product,
+                                               count_product_in_order=count_product)
+            new_order.total_sum = total_sum
+            new_order.save()
+
+            return redirect('home')
+        except Exception as e:
+            print(e)
+            return redirect('user_cart_page')

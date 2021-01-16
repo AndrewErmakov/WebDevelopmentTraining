@@ -125,23 +125,34 @@ class ProductInCart(models.Model):
 
 class Recipient(models.Model):
     """Модель получателя заказа"""
-    name_recipient = models.CharField(max_length=50, verbose_name='Имя получателя заказа')
-    surname_recipient = models.CharField(max_length=50, verbose_name='Фамилия получателя заказа')
-    phone_recipient = models.CharField(max_length=14, verbose_name='Номер телефона получателя заказа')
+    name_recipient = models.CharField(max_length=50, verbose_name='Имя получателя заказа', blank=True, null=True)
+    surname_recipient = models.CharField(max_length=50, verbose_name='Фамилия получателя заказа', blank=True, null=True)
+    phone_recipient = models.CharField(max_length=14, verbose_name='Номер телефона получателя заказа', blank=True, null=True)
+
+    class Meta:
+        verbose_name_plural = 'Получатели заказа'
+        verbose_name = 'Получатель заказа'
+        ordering = ['name_recipient', 'surname_recipient']
+
+    def __str__(self):
+        return f'{self.name_recipient} {self.surname_recipient}'
 
 
 class Order(models.Model):
     """Модель оформленного заказа"""
-    recipient = models.ForeignKey(Recipient, on_delete=models.CASCADE, verbose_name='Получатель')
     num_order = models.CharField(max_length=20, verbose_name='Номер заказа', blank=True, null=True, unique=True)
-    date_order = models.DateField(db_index=True, verbose_name='Дата получения заказа')
+    created_at = models.DateTimeField(auto_now=True, verbose_name='Дата и время создания зказа', db_index=True)
+
+    recipient = models.ForeignKey(Recipient, on_delete=models.CASCADE, verbose_name='Получатель')
     buyer_email = models.EmailField(verbose_name='Электронная почта покупателя')
-    payment_method = models.CharField(max_length=30, verbose_name='Способ оплаты')
-    cart_products = models.ForeignKey(CartUser, on_delete=models.DO_NOTHING, verbose_name='Корзина покупателя')
+
     total_sum = models.DecimalField(max_digits=9, decimal_places=2, blank=True, null=True,
                                     verbose_name='Итоговая цена заказа',
                                     validators=[validators.MinValueValidator(1), validators.MaxValueValidator(1000000)])
-    created_at = models.DateTimeField(auto_now=True, verbose_name='Дата и время создания зказа', db_index=True)
+    payment_method = models.CharField(max_length=30, verbose_name='Способ оплаты')
+    method_receive_order = models.CharField(max_length=30, verbose_name='Способ оплаты', default='Самовывоз')
+
+    date_order = models.DateField(db_index=True, verbose_name='Дата получения заказа', blank=True, null=True)
 
     def __str__(self):
         return f'Заказ №{str(self.pk).zfill(6)}.'
@@ -149,4 +160,19 @@ class Order(models.Model):
     class Meta:
         verbose_name_plural = 'Заказы'
         verbose_name = 'Заказ'
-        ordering = ['cart_products', 'date_order']
+        ordering = ['date_order', 'num_order', 'buyer_email']
+
+
+class ProductsInOrder(models.Model):
+    """Модель товаров в заказе"""
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, )
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name='Название товара')
+    count_product_in_order = models.PositiveIntegerField(verbose_name='Количество данного товара')
+
+    def __str__(self):
+        return f'Заказ №{str(Order.num_order).zfill(6)}.'
+
+    class Meta:
+        verbose_name_plural = 'Товары в заказах'
+        verbose_name = 'Товар в заказе'
+        ordering = ['product', 'count_product_in_order']
