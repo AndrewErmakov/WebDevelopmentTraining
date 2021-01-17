@@ -19,7 +19,9 @@ urlpatterns = [
     path('increase_count_products', IncreaseCountProducts.as_view(), name='increase_count_products'),
     # ordering
     path('ordering', Ordering.as_view(), name='ordering'),
-    path('order_created/<int:encrypted_order_num>/<int:key>/', OrderCreatedView.as_view(), name='order_created')
+    path('order_created/<int:encrypted_order_num>/<int:key>/', OrderCreatedView.as_view(), name='order_created'),
+    path('history_orders', HistoryOrdersView.as_view(), name='history_orders')
+    # path('pdf_details_order/<str:num_str>', GeneratePdfOrderDetails.as_view(), name='pdf_details_order')
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 

@@ -24,9 +24,16 @@
                     </div>
                     {% if user.is_authenticated %}
                     <ul class="nav navbar-nav navbar-right">
-                        <li><a href="{% url 'change_password' %}"><span class="glyphicon glyphicon-user"></span>Hi, {{ user.username }}!</a></li>
+                        <li class="dropdown">
+                            <a class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-user"></span>{{ user.username }}!<span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="{% url 'history_orders' %}">Посмотреть историю заказов</a></li>
+                                <li><a href="{% url 'change_password' %}">Сменить пароль</a></li>
+                                <li><a href="{% url 'logout' %}"><span class="glyphicon glyphicon-log-in"></span>Выйти из аккаунта</a></li>
+                            </ul>
+                        </li>
                         <li><a href="{% url 'user_cart_page'%}"><span class="glyphicon glyphicon-shopping-cart"></span>Your cart</a></li>
-                        <li><a href="{% url 'logout' %}"><span class="glyphicon glyphicon-log-in"></span>Logout</a></li>
+
                     </ul>
                     {% else %}
                     <ul class="nav navbar-nav navbar-right">

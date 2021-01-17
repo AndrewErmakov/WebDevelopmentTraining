@@ -1,8 +1,9 @@
 import random
 
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render, redirect
+from django.template.loader import render_to_string
 from django.views import View
 
 from .forms import *
@@ -377,12 +378,30 @@ class Ordering(View, LoginRequiredMixin):
 
 class OrderCreatedView(View, LoginRequiredMixin):
     """Класс просмотра страницы о создании заказа"""
+
     def get(self, request, encrypted_order_num, key):
         try:
             decoded_order_number = str(encrypted_order_num - key).zfill(6)
             return render(request, 'order_created.html',
-                          {'num':decoded_order_number})
+                          {'num': decoded_order_number})
         except Exception as e:
             print(e)
             return redirect('home')
+
+
+class HistoryOrdersView(View, LoginRequiredMixin):
+    """Класс просмотра истории заказов"""
+
+    def get(self, request):
+        """Получение истории страницы заказов"""
+        try:
+            orders = Order.objects.filter(buyer_email=request.user.email)
+            return render(request, 'order_history_page.html',
+                          {'orders': orders})
+        except Exception as e:
+            print(e)
+            return redirect('home')
+
+
+
 

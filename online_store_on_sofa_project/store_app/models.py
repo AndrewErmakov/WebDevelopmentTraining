@@ -155,7 +155,7 @@ class Order(models.Model):
     date_order = models.DateField(db_index=True, verbose_name='Дата получения заказа', blank=True, null=True)
 
     def __str__(self):
-        return f'Заказ №{str(self.pk).zfill(6)}.'
+        return f'{str(self.pk).zfill(6)}'
 
     class Meta:
         verbose_name_plural = 'Заказы'
@@ -165,7 +165,7 @@ class Order(models.Model):
 
 class ProductsInOrder(models.Model):
     """Модель товаров в заказе"""
-    order = models.ForeignKey(Order, on_delete=models.CASCADE, )
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, verbose_name='Заказ')
     product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name='Название товара')
     count_product_in_order = models.PositiveIntegerField(verbose_name='Количество данного товара')
 
