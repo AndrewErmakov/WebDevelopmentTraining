@@ -150,7 +150,7 @@ class Order(models.Model):
                                     verbose_name='Итоговая цена заказа',
                                     validators=[validators.MinValueValidator(1), validators.MaxValueValidator(1000000)])
     payment_method = models.CharField(max_length=30, verbose_name='Способ оплаты')
-    method_receive_order = models.CharField(max_length=30, verbose_name='Способ оплаты', default='Самовывоз')
+    method_receive_order = models.CharField(max_length=30, verbose_name='Способ получения заказа', default='Самовывоз')
 
     date_order = models.DateField(db_index=True, verbose_name='Дата получения заказа', blank=True, null=True)
 
@@ -165,7 +165,7 @@ class Order(models.Model):
 
 class ProductsInOrder(models.Model):
     """Модель товаров в заказе"""
-    order = models.ForeignKey(Order, on_delete=models.CASCADE, verbose_name='Заказ')
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, verbose_name='Заказ', null=True, blank=True)
     product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name='Название товара')
     count_product_in_order = models.PositiveIntegerField(verbose_name='Количество данного товара')
 
