@@ -50,9 +50,31 @@
             {% endblock content %}
         </main>
         <footer class="footer mt-auto py-3">
-          <div class="container">
-            <span class="text-muted"><a href="{% url 'contacts' %}">Контакты</a></span>
-          </div>
+              <div class="container">
+                  <p class="text-muted"><a href="{% url 'contacts' %}">Контакты</a></p>
+                  <p><a data-toggle="modal" data-target="#Modal_feedback">Cвязаться с нами</a></p>
+
+                  <div class="modal fade panel panel-primary" id="Modal_feedback" role="dialog">
+                      <div class="modal-dialog">
+                          <div class="modal-header">
+                              <button type="button" class="close" data-dismiss="modal">&times;</button>
+                              <h4 align="center" class="modal-title"><kbd>Форма обратной связи</kbd></h4>
+                          </div>
+                          <div class="modal-body">
+                              <h3 align="center"><code>Введите свои контактные данные</code></h3><hr>
+                              <form method="POST" action="feedback_form">
+                                  <p><input required type="text" id="client_name" placeholder="Имя" class="form-control" \></p>
+                                  <p><input required type="text" id="client_phone" placeholder="Телефон" class="form-control" \></p>
+                                  <p><input required type="email" id="client_email" placeholder="Электронная почта" class="form-control" \></p>
+                                  <p><textarea class="form-control" required rows="5" cols="80" id="question_client" placeholder="Ваш вопрос"></textarea></p>
+                                  <button type="submit" class="btn btn-success">Отправить</button>
+                              </form>
+                          </div>
+                          <div class="modal-footer">
+                          </div>
+                      </div>
+                  </div>
+              </div>
         </footer>
         {% block scripts %}
         {% endblock scripts %}
