@@ -59,6 +59,14 @@ class CountProductInOrderAdmin(admin.ModelAdmin):
     search_fields = ('product', 'count_product_in_order', 'order')
 
 
+class FeedbackAdmin(admin.ModelAdmin):
+    list_display = ['name_client', 'phone_client', 'email_client', 'question_client', 'given_feedback']
+    list_display_links = ['name_client', 'phone_client', 'email_client', 'question_client', 'given_feedback']
+    search_fields = ('name_client', 'phone_client', 'email_client', 'question_client', 'given_feedback')
+
+
+admin.site.register(FeedBackWithClient, FeedbackAdmin)
+
 admin.site.register(Product, ProductAdmin)
 admin.site.register(Rubric)
 admin.site.register(ImageProduct, ImageProductAdmin)

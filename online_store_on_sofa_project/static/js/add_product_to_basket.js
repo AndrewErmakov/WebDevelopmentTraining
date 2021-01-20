@@ -1,3 +1,4 @@
+
 $(document).on('submit', '#add_product_to_basket',function(e){
      e.preventDefault();
      $.ajax({

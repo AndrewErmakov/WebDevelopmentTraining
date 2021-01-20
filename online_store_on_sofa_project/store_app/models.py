@@ -186,6 +186,9 @@ class FeedBackWithClient(models.Model):
     phone_client = models.CharField(max_length=14, verbose_name='Номер телефона для обратной связи')
     email_client = models.EmailField(verbose_name='Электронная почта для обратной связи',
                                      validators=[validators.MinLengthValidator(5)])
+
+    question_client = models.TextField(verbose_name='Вопрос клиента', validators=[validators.MinLengthValidator(15)],
+                                       null=True)
     given_feedback = models.BooleanField(verbose_name='Дана ли обратная связь?', default=False)
 
     def __str__(self):

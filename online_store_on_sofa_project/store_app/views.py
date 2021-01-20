@@ -36,6 +36,34 @@ class ContactsPage(View):
         return render(request, 'contacts.html')
 
 
+class FeedbackFormView(View):
+    """Класс обработки отправки данных на заявку по получению обратной связи"""
+
+    def post(self, request):
+        response_data = {}
+        try:
+            # print(request.POST.get('name'))
+            # print(request.POST.get('phone'))
+            # print(request.POST.get('email'))
+            # print(request.POST.get('question'))
+            FeedBackWithClient.objects.create(
+                name_client=request.POST.get('name'),
+                phone_client=request.POST.get('phone'),
+                email_client=request.POST.get('email'),
+                question_client=request.POST.get('question')
+            )
+            response_data['status'] = 'OK'
+            return JsonResponse(response_data)
+        except Exception as e:
+            print(e)
+            print(request.POST.get('name'))
+            print(request.POST.get('phone'))
+            print(request.POST.get('email'))
+            print(request.POST.get('question'))
+            response_data['status'] = 'BAD'
+            return JsonResponse(response_data)
+
+
 class ProductDetailsPage(View):
     """Класс просмотра страницы - подробности о выбранном товаре"""
 
@@ -44,12 +72,14 @@ class ProductDetailsPage(View):
         rubrics = Rubric.objects.all()
         try:
             count_product = WarehouseProducts.objects.get(product=product).count_products
-        except:
+        except Exception as e:
+            print(e)
             count_product = 0
 
         try:
             presence_flag_comment_user = bool(len(product.comment_set.filter(author_comment=request.user)))
-        except:
+        except Exception as e:
+            print(e)
             presence_flag_comment_user = False
 
         try:

@@ -62,7 +62,8 @@
                           </div>
                           <div class="modal-body">
                               <h3 align="center"><code>Введите свои контактные данные</code></h3><hr>
-                              <form method="POST" action="feedback_form">
+                              <form method="POST" action="feedback_form" class="feedback_form">
+                                  {% csrf_token %}
                                   <p><input required type="text" id="client_name" placeholder="Имя" class="form-control" \></p>
                                   <p><input required type="text" id="client_phone" placeholder="Телефон" class="form-control" \></p>
                                   <p><input required type="email" id="client_email" placeholder="Электронная почта" class="form-control" \></p>
@@ -76,7 +77,10 @@
                   </div>
               </div>
         </footer>
+        <script type="text/javascript" src="{% static 'js/feedback_form.js' %}"></script>
+
         {% block scripts %}
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.maskedinput/1.4.1/jquery.maskedinput.min.js"></script>
         {% endblock scripts %}
     </body>
 </html>
