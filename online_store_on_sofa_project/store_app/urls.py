@@ -1,5 +1,5 @@
 from django.conf import settings
-from django.urls import path
+from django.urls import path, re_path
 from django.conf.urls.static import static
 from .views import *
 urlpatterns = [
@@ -25,6 +25,9 @@ urlpatterns = [
     # footer
     path('contacts/', ContactsPage.as_view(), name='contacts'),
     path('feedback_form', FeedbackFormView.as_view(), name='feedback_form'),
+
+    re_path(r'sorting_products/(?P<type_sorting>[a-z]+_[a-z]+)', ProductsBySortingView.as_view(),
+            name='sorting_products'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 

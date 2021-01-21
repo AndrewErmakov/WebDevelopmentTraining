@@ -1,3 +1,9 @@
+* {
+	margin: 0;
+	padding: 0;
+}
+
+
 a .logo{
     float:left;
     margin-top:0px;
@@ -12,12 +18,6 @@ height: 450px
   background-color: #f1f1f1;
   height: 100%;
 }
-footer {
-      background-color: #555;
-      color: white;
-      padding: 15px;
-}
-
 
 button.captcha-refresh {
     color: white;
@@ -45,4 +45,39 @@ button.captcha-refresh:active {
 
 #change_count{
     display: inline-block;
+}
+/*прижатый footer*/
+body {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+}
+
+.content {
+  margin-top: 40px; /*участвует в закреплении header*/
+  flex: 1; /*участвует в прижатии footer */
+}
+
+footer {
+      background-color: #555;
+      color: white;
+      padding: 15px;
+}
+
+/*закрепленная шапка при скролле*/
+header {
+    width: 100%;
+    height: 60px;
+    position: fixed;
+    z-index: 1000;
+}
+
+
+.sorting p, select{
+    display:inline-block;
+
+}
+
+#choice_sorting {
+    width: 160px;
 }

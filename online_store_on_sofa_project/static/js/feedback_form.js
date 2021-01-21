@@ -12,7 +12,7 @@ $(document).on('submit', '.feedback_form',function(e){
                 name:$('#client_name').val(),
                 phone:$('#client_phone').val(),
                 email:$('#client_email').val(),
-                question:$('#question_client').text(),
+                question:$('#question_client').val(),
                 csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
                 action: 'post'
             },

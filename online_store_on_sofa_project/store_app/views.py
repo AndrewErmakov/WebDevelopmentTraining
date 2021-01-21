@@ -1,5 +1,4 @@
 import io
-import os
 import random
 
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -12,7 +11,7 @@ from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
-from reportlab.platypus import Table, TableStyle, SimpleDocTemplate, Spacer, Image
+from reportlab.platypus import Table, TableStyle, SimpleDocTemplate, Spacer
 from reportlab.platypus.para import Paragraph
 
 from .forms import *
@@ -42,10 +41,6 @@ class FeedbackFormView(View):
     def post(self, request):
         response_data = {}
         try:
-            # print(request.POST.get('name'))
-            # print(request.POST.get('phone'))
-            # print(request.POST.get('email'))
-            # print(request.POST.get('question'))
             FeedBackWithClient.objects.create(
                 name_client=request.POST.get('name'),
                 phone_client=request.POST.get('phone'),
@@ -53,15 +48,12 @@ class FeedbackFormView(View):
                 question_client=request.POST.get('question')
             )
             response_data['status'] = 'OK'
-            return JsonResponse(response_data)
+
         except Exception as e:
             print(e)
-            print(request.POST.get('name'))
-            print(request.POST.get('phone'))
-            print(request.POST.get('email'))
-            print(request.POST.get('question'))
             response_data['status'] = 'BAD'
-            return JsonResponse(response_data)
+
+        return JsonResponse(response_data)
 
 
 class ProductDetailsPage(View):
@@ -70,6 +62,7 @@ class ProductDetailsPage(View):
     def get(self, request, pk):
         product = Product.objects.get(pk=pk)
         rubrics = Rubric.objects.all()
+        print(request.path)
         try:
             count_product = WarehouseProducts.objects.get(product=product).count_products
         except Exception as e:
@@ -110,6 +103,25 @@ class ProductsByRubricPage(View):
                    'rubrics': rubrics,
                    'selected_rubric': selected_rubric}
         return render(request, 'products_by_rubric.html', context)
+
+
+class ProductsBySortingView(View):
+    """Класс просмотра страницы товарых отсортированных по какому-либо параметру"""
+    def get(self, request, type_sorting):
+        try:
+            products = ''
+            num_option = '5'
+            if str(type_sorting) == 'increase_price':
+                products = Product.objects.order_by('price')
+                num_option = '1'
+            elif str(type_sorting) == 'decrease_price':
+                products = Product.objects.order_by('-price')
+                num_option = '2'
+            rubrics = Rubric.objects.all()
+            context = {'products': products, 'rubrics': rubrics, 'num_option': num_option}
+            return render(request, 'sorted_products_page.html', context)
+        except Exception as e:
+            print(e)
 
 
 class AddNewProductBySuperuser(View):

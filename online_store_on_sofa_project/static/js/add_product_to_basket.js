@@ -1,4 +1,3 @@
-
 $(document).on('submit', '#add_product_to_basket',function(e){
      e.preventDefault();
      $.ajax({
@@ -6,7 +5,7 @@ $(document).on('submit', '#add_product_to_basket',function(e){
             url: $("#add_product_to_basket").prop('action'),
             data:{
                 count_product:$('#number').val(),
-                product_id:$('#product_id_to_basket').val(),
+                product_id:$(e.target).find('#product_id_to_basket').first().val(),
                 csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
                 action: 'post'
             },
@@ -18,8 +17,7 @@ $(document).on('submit', '#add_product_to_basket',function(e){
                         }
                         var count_in_warehouse = $('#count_in_warehouse').text();
                         var count_to_cart = $('#number').val();
-                        count_in_warehouse = +count_in_warehouse - +count_to_cart;
-                        $('#count_in_warehouse').text(count_in_warehouse);
+                        $('#count_in_warehouse').text(+count_in_warehouse - +count_to_cart);
 
                     }
                     else if(json.status === 'MORE'){

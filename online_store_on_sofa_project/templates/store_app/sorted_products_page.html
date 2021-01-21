@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block title %}
-    Главная
+    TOP SHOP
 {% endblock title %}
 
 {% block styles %}
@@ -34,16 +34,17 @@
                 <div class="sorting">
                     <p>Cортировка</p>
                     <select class="form-control" id="choice_sorting" onchange="window.location.href=this.options[this.selectedIndex].value">
-                        <option VALUE="{% url 'sorting_products' 'increase_price' %}">Дешевые сверху</option>
-                        <option VALUE="{% url 'sorting_products' 'decrease_price' %}">Дорогие сверху</option>
-                        <option VALUE="{% url 'sorting_products' 'top_rating' %}">Высокий рейтинг по отзывым</option>
-                        <option VALUE="{% url 'sorting_products' 'many_reviews' %}">Много отзывов</option>
-                        <option selected VALUE="{% url 'home' %}">По популярности</option>
+                        <option VALUE="{% url 'sorting_products' 'increase_price' %}" id="option_1">Дешевые сверху</option>
+                        <option VALUE="{% url 'sorting_products' 'decrease_price' %}" id="option_2">Дорогие сверху</option>
+                        <option VALUE="{% url 'sorting_products' 'top_rating' %}" id="option_3">Высокий рейтинг по отзывам</option>
+                        <option VALUE="{% url 'sorting_products' 'many_reviews' %}" id="option_4">Много отзывов</option>
+                        <option VALUE="{% url 'home' %}" id="option_5">По популярности</option>
                     </select>
+                    <input type="hidden" id="num_option" value="{{ num_option }}">
                     <br>
                 </div>
                 <div class="row">
-                    {% for product in new_products %}
+                    {% for product in products %}
                     <div class="col-sm-4">
                         <div class="panel panel-default">
                             <div class="panel-heading">
@@ -81,7 +82,6 @@
                             <div class="panel-footer">
                                 <p>Цена: {{ product.price }}</p>
                                 <p>Бренд: {{ product.brand }}</p>
-                                <p>Рейтинг: {{ product. }}</p>
                                 <form method="POST" action="{% url 'add_product_to_basket' %}" id="add_product_to_basket">
                                     {% csrf_token %}
                                     <button type="submit" id="add_to_cart">
@@ -111,4 +111,5 @@
 
 {% block scripts %}
 <script type="text/javascript" src="{% static 'js/add_product_to_basket.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/choose_required_option_sorting.js' %}"></script>
 {% endblock scripts %}
