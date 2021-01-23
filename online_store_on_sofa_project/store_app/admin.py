@@ -3,9 +3,9 @@ from .models import *
 
 
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ('title', 'description', 'price', 'sale_start_time', 'rubric')
+    list_display = ('title', 'description', 'price', 'sale_start_time', 'rubric', 'avg_rating')
     list_display_links = ('title', 'description')
-    search_fields = ('title', 'description', 'price', 'rubric')
+    search_fields = ('title', 'description', 'price', 'rubric', 'avg_rating')
 
 
 class ImageProductAdmin(admin.ModelAdmin):

@@ -31,8 +31,8 @@
 
 
 
-                <div class="sorting">
-                    <p>Cортировка</p>
+                <div class="list-inline">
+                    <p class="lead">Cортировка</p>
                     <select class="form-control" id="choice_sorting" onchange="window.location.href=this.options[this.selectedIndex].value">
                         <option VALUE="{% url 'sorting_products' 'increase_price' %}">Дешевые сверху</option>
                         <option VALUE="{% url 'sorting_products' 'decrease_price' %}">Дорогие сверху</option>
@@ -81,7 +81,11 @@
                             <div class="panel-footer">
                                 <p>Цена: {{ product.price }}</p>
                                 <p>Бренд: {{ product.brand }}</p>
-                                <p>Рейтинг: {{ product. }}</p>
+                                {% if product.avg_rating == -1 %}
+                                <p>Оценок нет</p>
+                                {% else %}
+                                <p>Рейтинг: {{ product.avg_rating }} ({{ count_reviews_products.product }} отзывов)</p>
+                                {% endif %}
                                 <form method="POST" action="{% url 'add_product_to_basket' %}" id="add_product_to_basket">
                                     {% csrf_token %}
                                     <button type="submit" id="add_to_cart">

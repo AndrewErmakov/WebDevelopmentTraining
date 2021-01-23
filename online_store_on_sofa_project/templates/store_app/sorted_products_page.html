@@ -82,6 +82,15 @@
                             <div class="panel-footer">
                                 <p>Цена: {{ product.price }}</p>
                                 <p>Бренд: {{ product.brand }}</p>
+                                {% if product.avg_rating == -1 %}
+                                <p>Оценок нет</p>
+                                {% else %}
+                                <p>Рейтинг: {{ product.avg_rating }} ({{ count_reviews_products.product }} отзывов)</p>
+                                {% endif %}
+
+                                {% if product.warehouseproducts.count_products == 0 %}
+                                <p>Нет в наличии</p>
+                                {% else %}
                                 <form method="POST" action="{% url 'add_product_to_basket' %}" id="add_product_to_basket">
                                     {% csrf_token %}
                                     <button type="submit" id="add_to_cart">
@@ -90,6 +99,7 @@
                                     <input type="hidden" name="product_id_to_basket" value="{{ product.id }}" id="product_id_to_basket">
                                     <input type="hidden" id="number" value="1" name="number">
                                 </form>
+                                {% endif %}
                             </div>
                         </div>
                     </div>

@@ -2,6 +2,8 @@ import io
 import random
 
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.models import AnonymousUser
+from django.db.models import Avg
 from django.http import JsonResponse, FileResponse
 from django.shortcuts import render, redirect
 from django.views import View
@@ -107,21 +109,39 @@ class ProductsByRubricPage(View):
 
 class ProductsBySortingView(View):
     """Класс просмотра страницы товарых отсортированных по какому-либо параметру"""
+
     def get(self, request, type_sorting):
         try:
-            products = ''
+            products = Product.objects.all()
             num_option = '5'
+
+            count_reviews_products = {}
+            for product in products:
+                count_reviews_products[product] = product.comment_set.all().count()
+
             if str(type_sorting) == 'increase_price':
-                products = Product.objects.order_by('price')
+                products = products.order_by('price')
                 num_option = '1'
+
             elif str(type_sorting) == 'decrease_price':
-                products = Product.objects.order_by('-price')
+                products = products.order_by('-price')
                 num_option = '2'
+
+            elif str(type_sorting) == 'top_rating':
+                products = products.order_by('-avg_rating')
+                num_option = '3'
+
+            elif str(type_sorting) == 'many_reviews':
+                num_option = '4'
+
             rubrics = Rubric.objects.all()
-            context = {'products': products, 'rubrics': rubrics, 'num_option': num_option}
+            # print(count_reviews_products)
+            context = {'products': products, 'rubrics': rubrics, 'num_option': num_option,
+                       'count_reviews_products': count_reviews_products}
             return render(request, 'sorted_products_page.html', context)
         except Exception as e:
             print(e)
+            return redirect('add_image_product')
 
 
 class AddNewProductBySuperuser(View):
@@ -244,6 +264,7 @@ class AddProductToCart(View, LoginRequiredMixin):
             return JsonResponse(response_data)
         except Exception as e:
             print(e)
+            print(request.user == AnonymousUser)
             response_data['status'] = 'BAD'
             return JsonResponse(response_data)
 
