@@ -64,7 +64,7 @@ class ProductDetailsPage(View):
     def get(self, request, pk):
         product = Product.objects.get(pk=pk)
         rubrics = Rubric.objects.all()
-        print(request.path)
+
         try:
             count_product = WarehouseProducts.objects.get(product=product).count_products
         except Exception as e:
@@ -121,6 +121,8 @@ class ProductsBySortingView(View):
 
             if str(type_sorting) == 'increase_price':
                 products = products.order_by('price')
+                for product in product:
+                    avg, count = product.comment_set.all.annotate(Avg('rating'))
                 num_option = '1'
 
             elif str(type_sorting) == 'decrease_price':
@@ -132,12 +134,12 @@ class ProductsBySortingView(View):
                 num_option = '3'
 
             elif str(type_sorting) == 'many_reviews':
+                products = products.order_by('-count_reviews')
                 num_option = '4'
 
             rubrics = Rubric.objects.all()
-            # print(count_reviews_products)
-            context = {'products': products, 'rubrics': rubrics, 'num_option': num_option,
-                       'count_reviews_products': count_reviews_products}
+
+            context = {'products': products, 'rubrics': rubrics, 'num_option': num_option}
             return render(request, 'sorted_products_page.html', context)
         except Exception as e:
             print(e)
@@ -190,13 +192,13 @@ class AddNewComment(LoginRequiredMixin, View):
         try:
             rating = request.POST.get('rating')
             text_comment = request.POST.get('text_comment')
-            new_comment = Comment(
-                rating=int(rating),
-                text_comment=text_comment,
-                author_comment=request.user,
-                product=Product.objects.get(pk=request.POST.get('product_id'))
-            )
-            new_comment.save()
+            commented_product = Product.objects.get(pk=request.POST.get('product_id'))
+
+            Comment.objects.create(rating=int(rating), text_comment=text_comment,
+                                   author_comment=request.user, product=commented_product)
+
+            commented_product.count_reviews += 1
+
             response_data['status'] = 'OK'
             response_data['rating'] = rating
             response_data['text_comment'] = text_comment

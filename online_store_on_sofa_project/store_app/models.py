@@ -26,6 +26,8 @@ class Product(models.Model):
                                          validators.MaxValueValidator(5)]
                                      )
 
+    count_reviews = models.PositiveIntegerField(verbose_name='Число отзывов на товар', default=0)
+
     class Meta:
         verbose_name_plural = 'Товары'
         verbose_name = 'Товар'

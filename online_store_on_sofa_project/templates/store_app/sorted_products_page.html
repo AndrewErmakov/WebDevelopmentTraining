@@ -46,9 +46,9 @@
                 <div class="row">
                     {% for product in products %}
                     <div class="col-sm-4">
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
-                                <p align="center"><a href="{% url 'product_details' product.pk %}">{{ product.title }}</a></p>
+                        <div class="panel panel-default" id="product_view">
+                            <div class="panel-heading" id="product_title">
+                                <h4 align="center"><a href="{% url 'product_details' product.pk %}">{{ product.title }}</a></h4>
                             </div>
 
                             <div class="panel-body" id="product_image" align="center">
@@ -79,17 +79,18 @@
                                     </div>
                             </div>
 
-                            <div class="panel-footer">
+                            <div class="panel-footer" id="product_info">
                                 <p>Цена: {{ product.price }}</p>
                                 <p>Бренд: {{ product.brand }}</p>
+
                                 {% if product.avg_rating == -1 %}
                                 <p>Оценок нет</p>
                                 {% else %}
-                                <p>Рейтинг: {{ product.avg_rating }} ({{ count_reviews_products.product }} отзывов)</p>
+                                <p>Рейтинг: {{ product.avg_rating }} ({{ product.count_reviews  }} отзывов)</p>
                                 {% endif %}
 
                                 {% if product.warehouseproducts.count_products == 0 %}
-                                <p>Нет в наличии</p>
+                                <h4 align="center">Нет в наличии</h4>
                                 {% else %}
                                 <form method="POST" action="{% url 'add_product_to_basket' %}" id="add_product_to_basket">
                                     {% csrf_token %}
