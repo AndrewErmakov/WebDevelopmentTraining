@@ -1,4 +1,3 @@
-import io
 import random
 
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -7,16 +6,9 @@ from django.db.models import Avg
 from django.http import JsonResponse, FileResponse
 from django.shortcuts import render, redirect
 from django.views import View
-from reportlab.lib import colors
-from reportlab.lib.enums import TA_CENTER, TA_LEFT
-from reportlab.lib.pagesizes import A4
-from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
-from reportlab.pdfbase import pdfmetrics
-from reportlab.pdfbase.ttfonts import TTFont
-from reportlab.platypus import Table, TableStyle, SimpleDocTemplate, Spacer
-from reportlab.platypus.para import Paragraph
 
 from .forms import *
+from .generate_pdf_details_order import GeneratePdfDetailsOrder
 from .models import *
 
 
@@ -66,10 +58,10 @@ class ProductDetailsPage(View):
         rubrics = Rubric.objects.all()
 
         try:
-            count_product = WarehouseProducts.objects.get(product=product).count_products
+            count_product_in_warehouse = WarehouseProducts.objects.get(product=product).count_products
         except Exception as e:
             print(e)
-            count_product = 0
+            count_product_in_warehouse = 0
 
         try:
             presence_flag_comment_user = bool(len(product.comment_set.filter(author_comment=request.user)))
@@ -77,21 +69,11 @@ class ProductDetailsPage(View):
             print(e)
             presence_flag_comment_user = False
 
-        try:
-            total_rating = self.get_total_rating(product)
-        except ZeroDivisionError:  # при отсутствии оценок от пользователей и комментариев на товар
-            total_rating = 0
+        total_rating = (0, product.avg_rating)[product.avg_rating >= 0]
 
         context = {'product': product, 'rubrics': rubrics, 'presence_flag_comment_user': presence_flag_comment_user,
-                   'rating': total_rating, 'count_product': count_product}
+                   'rating': total_rating, 'count_product': count_product_in_warehouse}
         return render(request, 'product_details.html', context)
-
-    def get_total_rating(self, product, sum_points=0):
-        comments = product.comment_set.all()
-        for comment in comments:
-            sum_points += comment.rating
-
-        return round(sum_points / len(comments), 1)
 
 
 class ProductsByRubricPage(View):
@@ -112,30 +94,16 @@ class ProductsBySortingView(View):
 
     def get(self, request, type_sorting):
         try:
-            products = Product.objects.all()
-            num_option = '5'
 
-            count_reviews_products = {}
-            for product in products:
-                count_reviews_products[product] = product.comment_set.all().count()
+            mapping_sort = {
+                'increase_price': ['price', '1'],
+                'decrease_price': ['-price', '2'],
+                'top_rating': ['-avg_rating', '3'],
+                'many_reviews': ['-count_reviews', '4']
+            }
 
-            if str(type_sorting) == 'increase_price':
-                products = products.order_by('price')
-                for product in product:
-                    avg, count = product.comment_set.all.annotate(Avg('rating'))
-                num_option = '1'
-
-            elif str(type_sorting) == 'decrease_price':
-                products = products.order_by('-price')
-                num_option = '2'
-
-            elif str(type_sorting) == 'top_rating':
-                products = products.order_by('-avg_rating')
-                num_option = '3'
-
-            elif str(type_sorting) == 'many_reviews':
-                products = products.order_by('-count_reviews')
-                num_option = '4'
+            products = Product.objects.all().order_by(mapping_sort[type_sorting][0])
+            num_option = mapping_sort[type_sorting][1]
 
             rubrics = Rubric.objects.all()
 
@@ -197,7 +165,10 @@ class AddNewComment(LoginRequiredMixin, View):
             Comment.objects.create(rating=int(rating), text_comment=text_comment,
                                    author_comment=request.user, product=commented_product)
 
+            # изменить инфу в БД Products
             commented_product.count_reviews += 1
+            commented_product.avg_rating = commented_product.comment_set.all().aggregate(Avg('rating'))['rating__avg']
+            commented_product.save()
 
             response_data['status'] = 'OK'
             response_data['rating'] = rating
@@ -341,7 +312,7 @@ class ReduceCountProducts(View, LoginRequiredMixin):
                                                         product=product)
 
             if product_in_cart.count_product_in_cart == 1:
-                response_data['status'] = 'знерщUGH'
+                response_data['status'] = 'ENOUGH'
                 return JsonResponse(response_data)
 
             product_in_cart.count_product_in_cart -= 1
@@ -477,84 +448,16 @@ class HistoryOrdersView(View, LoginRequiredMixin):
             return redirect('home')
 
 
-class GeneratePdfOrderDetails(View, LoginRequiredMixin):
-    def fill_and_generate_table(self, need_order, need_font):
-        """Генерация данных для таблицы: инфо о товарах  в заказе"""
-        data_to_table = [
-            ['Наименование товара', 'Цена товара', 'Количество', 'Сумма в рублях']
-        ]
-
-        for product_in_order in need_order.productsinorder_set.all():
-            data_to_table.append(
-                [product_in_order.product.title,
-                 product_in_order.product.price,
-                 product_in_order.count_product_in_order,
-                 product_in_order.count_product_in_order * product_in_order.product.price
-                 ]
-            )
-            data_to_table.append(['Итого', need_order.total_sum])
-
-            generated_table = Table(data_to_table)
-            table_style = TableStyle(
-                [
-                    ('FONTNAME', (0, 0), (-1, -1), need_font),
-                    ('BOX', (0, 0), (-1, -1), 2, colors.black),
-                    ('GRID', (0, 0), (-1, -2), 2, colors.black)
-                ]
-            )
-            generated_table.setStyle(table_style)
-            return generated_table
-
-    def register_fonts(self):
-        """Регистрация необходимых шрифтов"""
-        pdfmetrics.registerFont(TTFont('FreeSans', 'FreeSans.ttf'))
-        pdfmetrics.registerFont(TTFont('FreeSansBold', 'FreeSansBold.ttf'))
-
-    def set_need_styles(self):
-        """Установка необходимых стилей для оформления отчета"""
-        need_styles = getSampleStyleSheet()
-        need_styles.add(ParagraphStyle(name='our_heading', alignment=TA_CENTER, fontName='FreeSansBold', fontSize=16))
-        need_styles.add(ParagraphStyle(name='our_info', alignment=TA_LEFT, fontName='FreeSans', fontSize=12))
-        return need_styles
+class GeneratePdfOrderDetailsView(View, LoginRequiredMixin):
 
     def get(self, request, num_str):
         """Данные, которые нужно записать в pdf"""
         try:
-            self.register_fonts()
             order = Order.objects.get(num_order=num_str)
+            generation_pdf = GeneratePdfDetailsOrder(order, num_str)
+            result_pdf = generation_pdf.generate_pdf()
 
-            """Создание файлового буфер для приема данных PDF"""
-            buffer = io.BytesIO()
-
-            report_elements = []
-            styles = self.set_need_styles()
-            report_elements.append(Paragraph(f'Заказ №{num_str}', styles['our_heading']))
-            report_elements.append(Spacer(1, 10))
-
-            report_elements.append(Paragraph(f'Эл.почта покупателя: {order.buyer_email}', styles['our_info']))
-            report_elements.append(Spacer(1, 10))
-
-            report_elements.append(Paragraph(f'Получатель: {order.recipient}', styles['our_info']))
-            report_elements.append(Spacer(1, 10))
-
-            report_elements.append(Paragraph(f'Способ оплаты: {order.payment_method}', styles['our_info']))
-            report_elements.append(Spacer(1, 10))
-
-            report_elements.append(
-                Paragraph(f'Способ получения заказа: {order.method_receive_order}', styles['our_info']))
-            report_elements.append(Spacer(1, 10))
-
-            table = self.fill_and_generate_table(need_order=order, need_font='FreeSans')
-            report_elements.append(table)
-
-            """ Создание объект PDF, используя буфер в качестве своего «файла»."""
-            pdf = SimpleDocTemplate(buffer, pagesize=A4, title=f'Заказ №{num_str}')
-            """Сборка данных"""
-            pdf.build(report_elements)
-            # FileResponse sets the Content-Disposition header so that browsers
-            # present the option to save the file.
-            buffer.seek(0)
-            return FileResponse(buffer, as_attachment=False, filename=f'Заказ №{num_str}.pdf')
+            return FileResponse(result_pdf, as_attachment=False, filename=f'Заказ №{num_str}.pdf')
 
         except Exception as e:
             print(e)

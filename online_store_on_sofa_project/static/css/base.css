@@ -2,7 +2,10 @@
 	margin: 0;
 	padding: 0;
 }
-
+html, body
+{
+  height: 100%;
+}
 
 a .logo{
     float:left;
@@ -16,7 +19,7 @@ height: 450px
 .sidenav {
   padding-top: 20px;
   background-color: #f1f1f1;
-  height: 100%;
+  min-height: 250vh;
 }
 
 button.captcha-refresh {

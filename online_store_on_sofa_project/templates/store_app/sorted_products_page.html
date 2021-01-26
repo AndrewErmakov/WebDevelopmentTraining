@@ -28,11 +28,8 @@
         </div>
         <div class="col-sm-8 text-left" id="new_products">
             <div class="container">
-
-
-
                 <div class="sorting">
-                    <p>Cортировка</p>
+                    <p class="lead">Cортировка</p>
                     <select class="form-control" id="choice_sorting" onchange="window.location.href=this.options[this.selectedIndex].value">
                         <option VALUE="{% url 'sorting_products' 'increase_price' %}" id="option_1">Дешевые сверху</option>
                         <option VALUE="{% url 'sorting_products' 'decrease_price' %}" id="option_2">Дорогие сверху</option>

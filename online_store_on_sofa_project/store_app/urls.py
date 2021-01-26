@@ -21,7 +21,7 @@ urlpatterns = [
     path('ordering', Ordering.as_view(), name='ordering'),
     path('order_created/<int:encrypted_order_num>/<int:key>/', OrderCreatedView.as_view(), name='order_created'),
     path('history_orders', HistoryOrdersView.as_view(), name='history_orders'),
-    path('pdf_details_order/<str:num_str>', GeneratePdfOrderDetails.as_view(), name='pdf_details_order'),
+    path('pdf_details_order/<str:num_str>', GeneratePdfOrderDetailsView.as_view(), name='pdf_details_order'),
     # footer
     path('contacts/', ContactsPage.as_view(), name='contacts'),
     path('feedback_form', FeedbackFormView.as_view(), name='feedback_form'),
