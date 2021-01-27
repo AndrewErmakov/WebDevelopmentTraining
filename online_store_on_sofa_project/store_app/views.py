@@ -1,5 +1,3 @@
-import random
-
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import AnonymousUser
 from django.db.models import Avg
@@ -7,6 +5,7 @@ from django.http import JsonResponse, FileResponse
 from django.shortcuts import render, redirect
 from django.views import View
 
+from .coding_number_order import encryption_number_order, decryption_number_order
 from .forms import *
 from .generate_pdf_details_order import GeneratePdfDetailsOrder
 from .models import *
@@ -410,12 +409,9 @@ class Ordering(View, LoginRequiredMixin):
             cart_user.delete()
 
             """Закодируем наш номер заказа и передадим ему в url страницы о создании заказа"""
-            encryption_key = random.randint(280, 570)
-            print(encryption_key)
-            encrypted_order_number = new_order.pk + encryption_key
             return redirect('order_created',
-                            encrypted_order_num=encrypted_order_number,
-                            key=encryption_key)
+                            encrypted_order_num=encryption_number_order(new_order.pk)[0],
+                            key=encryption_number_order(new_order.pk)[1])
         except Exception as e:
             print(e)
             return redirect('user_cart_page')
@@ -426,9 +422,8 @@ class OrderCreatedView(View, LoginRequiredMixin):
 
     def get(self, request, encrypted_order_num, key):
         try:
-            decoded_order_number = str(encrypted_order_num - key).zfill(6)
             return render(request, 'order_created.html',
-                          {'num': decoded_order_number})
+                          {'num': decryption_number_order(encrypted_order_num, key)})
         except Exception as e:
             print(e)
             return redirect('home')
