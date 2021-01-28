@@ -1,6 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import AnonymousUser
-from django.db.models import Avg
 from django.http import JsonResponse, FileResponse
 from django.shortcuts import render, redirect
 from django.views import View
@@ -165,9 +164,7 @@ class AddNewComment(LoginRequiredMixin, View):
                                    author_comment=request.user, product=commented_product)
 
             # изменить инфу в БД Products
-            commented_product.count_reviews += 1
-            commented_product.avg_rating = commented_product.comment_set.all().aggregate(Avg('rating'))['rating__avg']
-            commented_product.save()
+            commented_product.update_avgRating_countReviews(commented_product)
 
             response_data['status'] = 'OK'
             response_data['rating'] = rating
