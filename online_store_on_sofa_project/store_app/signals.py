@@ -1,15 +1,23 @@
-from django.db.models import Avg
-from django.db.models.signals import post_save
+from django.db.models import signals, Avg
 from django.dispatch import receiver
 
-from .models import Comment
+from store_app.models import Comment
 
 
-@receiver(post_save, sender=Comment)
-def update_avgRating_countReviews(instance, **kwargs):
-    """Сигнал после добавления комментария на товар"""
-    print('comment saved')
+@receiver(signals.post_save, sender=Comment)
+def post_save_comment(sender, instance, created, **kwargs):
     product = instance.product
     product.count_reviews += 1
-    product.avg_rating = instance.objects.filter(product=product).aggregate(Avg('rating'))['rating__avg']
+    product.avg_rating = product.comment_set.all().aggregate(Avg('rating'))['rating__avg']
+    product.save()
+
+
+@receiver(signals.post_delete, sender=Comment)
+def post_delete_comment(sender, instance, created=False, **kwargs):
+    product = instance.product
+    product.count_reviews -= 1
+    if product.count_reviews == 0:
+        product.avg_rating = -1
+    else:
+        product.avg_rating = product.comment_set.all().aggregate(Avg('rating'))['rating__avg']
     product.save()

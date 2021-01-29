@@ -19,7 +19,10 @@ class AddNewCommentView(LoginRequiredMixin, View):
                                    author_comment=request.user, product=commented_product)
 
             # изменить инфу в БД Products
-            commented_product.update_avgRating_countReviews(commented_product)
+            # commented_product.update_avgRating_countReviews(commented_product)
+            # commented_product.count_reviews += 1
+            # commented_product.avg_rating = product.comment_set.all().aggregate(Avg('rating'))['rating__avg']
+            # commented_product.save()
 
             response_data['status'] = 'OK'
             response_data['rating'] = rating
