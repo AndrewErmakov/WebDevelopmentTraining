@@ -37,12 +37,11 @@ INSTALLED_APPS = [
     'crispy_forms',
     'captcha',  # simple captcha
     'g_recaptcha',  # recaptcha
-
+    'rolepermissions',
 
     # my apps
     'store_app',
     'accounts_app',
-
 ]
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
@@ -162,3 +161,6 @@ LOGIN_REDIRECT_URL = '/'
 MEDIA_DIR = os.path.join(BASE_DIR, 'media')
 MEDIA_ROOT = MEDIA_DIR
 MEDIA_URL = '/media/'
+
+
+ROLEPERMISSIONS_MODULE = 'online_store_on_sofa_project.roles'

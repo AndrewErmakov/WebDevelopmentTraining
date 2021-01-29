@@ -6,6 +6,7 @@ from store_app.models import Comment
 
 @receiver(signals.post_save, sender=Comment)
 def post_save_comment(sender, instance, created, **kwargs):
+    """Сигналы после добавления комментария"""
     product = instance.product
     product.count_reviews += 1
     product.avg_rating = product.comment_set.all().aggregate(Avg('rating'))['rating__avg']
@@ -14,6 +15,7 @@ def post_save_comment(sender, instance, created, **kwargs):
 
 @receiver(signals.post_delete, sender=Comment)
 def post_delete_comment(sender, instance, created=False, **kwargs):
+    """Сигнал после удаления комментария"""
     product = instance.product
     product.count_reviews -= 1
     if product.count_reviews == 0:
