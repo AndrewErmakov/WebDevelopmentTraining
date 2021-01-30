@@ -13,6 +13,6 @@ class CheckRequestsFeedbackView(HasPermissionsMixin, View):
             requests_for_feedback = FeedBackWithClient.objects.filter(given_feedback=False).order_by('id')
             context = {'requests': requests_for_feedback, 'username': request.user.username}
             return render(request, 'check_requests_for_feedback.html', context)
-        except PermissionDenied as e:
-            print(e)
-            return redirect('home')
+        except PermissionDenied:
+            raise PermissionDenied
+

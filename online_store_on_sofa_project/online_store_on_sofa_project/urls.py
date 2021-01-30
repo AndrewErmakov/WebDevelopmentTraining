@@ -23,3 +23,5 @@ urlpatterns = [
     path('captcha/', include('captcha.urls')),
     path('management/', include('management_app.urls')),
 ]
+handler403 = 'store_app.views.error_403'
+handler404 = 'store_app.views.error_404'
