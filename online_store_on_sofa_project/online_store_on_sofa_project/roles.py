@@ -11,3 +11,11 @@ class ContentManager(AbstractUserRole):
     available_permissions = {
         'add_products': True,
     }
+
+
+class TopManager(AbstractUserRole):
+    available_permissions = {
+        'add_products': True,
+        'feedback_with_clients': True,
+    }
+

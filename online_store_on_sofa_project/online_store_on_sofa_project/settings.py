@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     # my apps
     'store_app',
     'accounts_app',
+    'management_app',
 ]
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
@@ -63,9 +64,10 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [TEMPLATE_DIR,
+                 TEMPLATE_DIR + f'/{INSTALLED_APPS[-3]}',
                  TEMPLATE_DIR + f'/{INSTALLED_APPS[-2]}',
-                 TEMPLATE_DIR + f'/{INSTALLED_APPS[-1]}',
-                 TEMPLATE_DIR + '/errors', ],
+                 TEMPLATE_DIR + '/errors',
+                 TEMPLATE_DIR + f'/{INSTALLED_APPS[-1]}', ],
 
         'APP_DIRS': True,
         'OPTIONS': {
@@ -164,3 +166,6 @@ MEDIA_URL = '/media/'
 
 
 ROLEPERMISSIONS_MODULE = 'online_store_on_sofa_project.roles'
+# ROLEPERMISSIONS_REDIRECT_TO_LOGIN = True
+ROLEPERMISSIONS_REGISTER_ADMIN = True
+# ROLEPERMISSIONS_SUPERUSER_SUPERPOWERS = False

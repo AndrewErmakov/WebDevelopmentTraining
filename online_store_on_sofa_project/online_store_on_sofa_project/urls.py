@@ -21,6 +21,5 @@ urlpatterns = [
     path('', include('store_app.urls')),
     path('accounts/', include('accounts_app.urls')),
     path('captcha/', include('captcha.urls')),
+    path('management/', include('management_app.urls')),
 ]
-
-# handler404 = 'store_app.views.custom_handler404'

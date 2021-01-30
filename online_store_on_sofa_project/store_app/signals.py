@@ -1,7 +1,7 @@
 from django.db.models import signals, Avg
 from django.dispatch import receiver
 
-from store_app.models import Comment
+from .models import Comment
 
 
 @receiver(signals.post_save, sender=Comment)
