@@ -135,7 +135,7 @@ STATICFILES_DIRS = [
 
 # settings for sending e-mail
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = email_host
 EMAIL_USE_TLS = True
 # EMAIL_USE_SSL = False

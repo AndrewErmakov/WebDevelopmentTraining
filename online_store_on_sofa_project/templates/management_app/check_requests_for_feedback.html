@@ -24,17 +24,25 @@
             <h3>Привет, {{ username }}</h3>
             <h3>Вы на странице обработки заявок на обратную связь</h3>
             {% for request in requests %}
-            <button class="accordion">Заявка №{{ request.pk }}</button>
-            <div class="panel">
+            <button class="accordion" id="accordion_{{ request.pk }}">Заявка №{{ request.pk }}</button>
+            <div class="panel" id="panel_{{ request.pk }}">
                 <p>Имя клиента: {{ request.name_client }}</p>
                 <p>Телефон клиента: {{ request.phone_client }}</p>
                 <p>Электронная почта клиента: {{ request.email_client }}</p>
-                <p><h3>Вопрос клиента</h3>{{ request.question_client }}</p>
-                <form method="POST">
+                <p><h3>Вопрос клиента: </h3>{{ request.question_client }}</p>
+                <button type="button" id="render_form_send_message_{{ request.pk }}" class="btn btn-info">
+                    Открыть форму для написания сообщения
+                </button>
+
+                <form method="POST" hidden class="form_send_message" action="{% url 'response_to_request_feedback' %}" id="form_send_message_{{ request.pk }}">
                     {% csrf_token %}
-                    <button type="submit" class="btn btn-warning">Обратная связь дана</button>
+                    <textarea cols="60" rows="5" id="answer_to_question_client_{{ request.pk }}"></textarea>
+                    <button type="submit" class="btn btn-danger">Отправить ответ</button>
                 </form>
-                <br>
+                <br><br><br><br><br><br><br><br><br><br>
+
+
+
             </div>
             {% endfor %}
         </div>
@@ -56,5 +64,6 @@
 
 
 {% block scripts %}
-<script type="text/javascript" src="{% static 'js/check_requests_feedback_page_scripts.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/interaction_with_accordion.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/render_form_send_message.js' %}"></script>
 {% endblock scripts %}

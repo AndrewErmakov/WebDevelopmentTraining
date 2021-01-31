@@ -3,7 +3,6 @@ from .AddNewCommentView import AddNewCommentView
 from .AddNewProductBySuperuserView import AddNewProductBySuperuserView
 from .AddProductToCartView import AddProductToCartView
 from .ContactsPageView import ContactsPageView
-from .custom_handler404 import custom_handler404
 from .DeleteProductInCartView import DeleteProductInCartView
 from .FeedbackFormView import FeedbackFormView
 from .GeneratePdfOrderDetailsView import GeneratePdfOrderDetailsView
