@@ -11,3 +11,4 @@ class CheckRequestsFeedbackView(HasPermissionsMixin, View):
         requests_for_feedback = FeedBackWithClient.objects.filter(given_feedback=False).order_by('id')
         context = {'requests': requests_for_feedback, 'username': request.user.username}
         return render(request, 'check_requests_for_feedback.html', context)
+

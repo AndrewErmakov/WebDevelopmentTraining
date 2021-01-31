@@ -1,6 +1,4 @@
-from .AddImageProductBySuperuserView import AddImageProductBySuperuserView
 from .AddNewCommentView import AddNewCommentView
-from .AddNewProductBySuperuserView import AddNewProductBySuperuserView
 from .AddProductToCartView import AddProductToCartView
 from .ContactsPageView import ContactsPageView
 from .DeleteProductInCartView import DeleteProductInCartView

@@ -1,16 +1,14 @@
 from django.forms import ModelForm
-from .models import Product, ImageProduct
+from store_app.models import Product, ImageProduct
 
 
-class AddNewProductBySuperuserForm(ModelForm):
+class AddNewProductsForm(ModelForm):
     class Meta:
         model = Product
         fields = ['title', 'description', 'price', 'brand', 'rubric']
 
 
-class AddImageNewProductBySuperuserForm(ModelForm):
+class AddImageForProductForm(ModelForm):
     class Meta:
         model = ImageProduct
         fields = ['image', 'product']
-
-
