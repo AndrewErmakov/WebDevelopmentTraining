@@ -21,5 +21,6 @@ class TopManager(AbstractUserRole):
         'feedback_with_clients': True,
         'add_images_for_product': True,
         'change_info_existing_products': True,
+        'get_analytics': True,
     }
 
