@@ -23,3 +23,5 @@ def post_delete_comment(sender, instance, created=False, **kwargs):
     else:
         product.avg_rating = product.comment_set.all().aggregate(Avg('rating'))['rating__avg']
     product.save()
+
+

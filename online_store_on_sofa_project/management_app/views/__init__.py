@@ -2,3 +2,6 @@ from .CheckRequestsFeedbackView import CheckRequestsFeedbackView
 from .SendAnswerToClientFeedbackRequest import SendAnswerToClientFeedbackRequest
 from .AddNewProductsView import AddNewProductsView
 from .AddImagesForProductView import AddImagesForProductView
+from .ChangeInfoProductView import ChangeInfoProductView
+from .AddCountReceivedProductToWarehouse import AddCountReceivedProductToWarehouse
+from .ChangeCharacteristicsProductView import ChangeCharacteristicsProductView
