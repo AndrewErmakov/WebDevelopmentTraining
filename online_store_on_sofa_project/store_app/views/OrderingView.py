@@ -3,6 +3,7 @@ from django.shortcuts import render, redirect
 from django.views import View
 
 from store_app.coding_number_order import encryption_number_order
+# from import encryption_number_order
 from store_app.models import Recipient, Order, ProductInCart, ProductsInOrder
 
 
@@ -45,9 +46,12 @@ class OrderingView(View, LoginRequiredMixin):
             cart_user.delete()
 
             """Закодируем наш номер заказа и передадим ему в url страницы о создании заказа"""
+            encrypt_num_order = encryption_number_order(new_order.pk)
+
             return redirect('order_created',
-                            encrypted_order_num=encryption_number_order(new_order.pk)[0],
-                            key=encryption_number_order(new_order.pk)[1])
+                            encrypted_order_num=encrypt_num_order['encrypted_order_number'],
+                            key=encrypt_num_order['encryption_key'])
+
         except Exception as e:
             print(e)
             return redirect('user_cart_page')
