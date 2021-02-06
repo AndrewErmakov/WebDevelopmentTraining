@@ -1,10 +1,8 @@
 import datetime
 import json
-from pprint import pprint
 
 import pandas as pd
 from django.shortcuts import render, redirect
-from django.utils.safestring import SafeString
 from django.views import View
 from rolepermissions.mixins import HasPermissionsMixin
 from store_app.models import Order

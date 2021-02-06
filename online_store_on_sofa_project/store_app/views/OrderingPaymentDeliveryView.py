@@ -1,19 +1,20 @@
+from pprint import pprint
+
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect
 from django.views import View
 
 from store_app.coding_number_order import encryption_number_order
-# from import encryption_number_order
 from store_app.models import Recipient, Order, ProductInCart, ProductsInOrder
 
 
-class OrderingView(View, LoginRequiredMixin):
+class OrderingPaymentDeliveryView(View, LoginRequiredMixin):
     def get(self, request):
         try:
-            return render(request, 'ordering.html', {'user': request.user})
+            return render(request, 'ordering_payment_delivery.html', {'user': request.user})
         except Exception as e:
             print(e)
-            return redirect('home', {'need_warn': True})
+            return redirect('home')
 
     def post(self, request):
         try:
@@ -22,7 +23,8 @@ class OrderingView(View, LoginRequiredMixin):
                                                      phone_recipient=request.POST.get('phone'))
             new_order = Order.objects.create(recipient=new_recipient,
                                              buyer_email=request.user.email,
-                                             payment_method=request.POST.get('payment_method'))
+                                             payment_method='При получении')
+
             new_order.num_order = str(new_order.pk).zfill(6)
 
             """Находим корзину пользователя и товары в ней"""

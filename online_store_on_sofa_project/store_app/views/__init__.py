@@ -8,11 +8,12 @@ from .HistoryOrdersView import HistoryOrdersView
 from .HomepageView import HomepageView
 from .IncreaseCountProductsView import IncreaseCountProductsView
 from .OrderCreatedView import OrderCreatedView
-from .OrderingView import OrderingView
+from .OrderingPaymentDeliveryView import OrderingPaymentDeliveryView
+from .OrderingPaymentOnlineView import OrderingPaymentOnlineView
 from .ProductDetailsPageView import ProductDetailsPageView
 from .ProductsByRubricPageView import ProductsByRubricPageView
 from .ProductsBySortingView import ProductsBySortingView
 from .ReduceCountProductsView import ReduceCountProductsView
-from .UserCartPageView import UserCartPageView
+from .UserCartView import UserCartView
 from .error_403 import error_403
 from .error_404 import error_404

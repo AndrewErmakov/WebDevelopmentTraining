@@ -54,6 +54,7 @@
                             {% endif %}
                         {% endfor %}
 
+
                     </div>
                      <div class="col-2 col-sm-2">
                         <form action="delete_product_in_cart" class="delete_product_in_cart_form" method="POST">
@@ -71,7 +72,14 @@
                 <h2>Итоговая сумма</h2>
                 <h2 class="total_sum">{{ total_sum }}</h2>
             </div>
-            <button type="button" onclick="location.href='{% url 'ordering' %}'">Оформить заказ</button>
+            <form action="{% url 'user_cart_page' %}" method="POST" class="well">
+                {% csrf_token %}
+                <h1>Выбор способа оплаты</h1>
+                <p><input type="radio" checked name="payment_method_group" value="delivery"/> Оплата при получении</p>
+                <p><input type="radio" name="payment_method_group" value="online"/> Оплата онлайн</p>
+                <button type="submit">Оформить заказ</button>
+            </form>
+
             {% endif %}
 
             {% else %}

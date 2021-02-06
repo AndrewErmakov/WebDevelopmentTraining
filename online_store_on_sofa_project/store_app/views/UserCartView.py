@@ -1,11 +1,11 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views import View
 
 from store_app.models import CartUser, ProductInCart
 
 
-class UserCartPageView(View, LoginRequiredMixin):
+class UserCartView(View, LoginRequiredMixin):
     """Класс страницы просмотра корзины пользователя"""
 
     def get(self, request):
@@ -30,4 +30,12 @@ class UserCartPageView(View, LoginRequiredMixin):
                 return render(request, 'user_cart_page.html', {'is_empty_cart': True})
         except Exception as e:
             print(e)
-            return render(request, 'user_cart_page.html')
+            return redirect('home')
+
+    def post(self, request):
+        try:
+            print(request.POST.get('payment_method_group'))
+            return redirect('ordering_payment_' + request.POST.get('payment_method_group'))
+        except Exception as e:
+            print(e)
+            return redirect('home')

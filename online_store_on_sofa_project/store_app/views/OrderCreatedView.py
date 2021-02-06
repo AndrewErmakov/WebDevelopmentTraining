@@ -10,8 +10,6 @@ class OrderCreatedView(View, LoginRequiredMixin):
 
     def get(self, request, encrypted_order_num, key):
         try:
-            print(encrypted_order_num)
-            print(key)
             return render(request, 'order_created.html',
                           {'num': decryption_number_order(encrypted_order_num, key)})
         except Exception as e:

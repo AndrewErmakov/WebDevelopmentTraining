@@ -11,13 +11,12 @@
 <div class="container-fluid text-center">
     <div class="row content">
         <div class="col-sm-2 sidenav">
-
+            <a href="{% url 'user_cart_page' %}">Вернуться в корзину</a>
         </div>
 
-
         <div class="col-sm-8 text-left">
-            <h1>Оформление заказа</h1><hr>
-            <form method="POST" action="{% url 'ordering' %}">
+            <h1>Оформление заказа (оплата при получении)</h1><hr>
+            <form method="POST" action="{% url 'ordering_payment_delivery' %}">
                 {% csrf_token %}
                 <div id="recipient_contacts" class="well">
                     <h2><b>Получатель</b></h2>
@@ -25,14 +24,6 @@
                     <input required name="name_recipient" class="name_recipient" type="text" placeholder="Имя" value="{{ user.first_name }}"></p>
                     <input required type="text" name="surname_recipient" class="surname_recipient" placeholder="Фамилия" value="{{ user.last_name }}"></p>
                     <input required type="text" name="phone" class="phone" placeholder="Телефон"></p>
-                </div>
-
-                <div id="payment_method" class="well">
-                    <h2><b>Способ оплаты (при получении)</b></h2>
-                    <select required class="form-control" id="choice_payment_method" name="payment_method">
-                        <option value="Наличные">Наличные</option>
-                        <option value="Безналичный расчет">Безналичный расчет</option>
-                    </select>
                 </div>
 
                 <div id="method_receiving_order" class="well">
@@ -65,4 +56,6 @@
 {% block scripts %}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.maskedinput/1.4.1/jquery.maskedinput.min.js"></script>
 <script type="text/javascript" src="{% static 'js/ordering.js' %}"></script>
+<script src="https://js.stripe.com/v3/"></script>
+
 {% endblock scripts %}
