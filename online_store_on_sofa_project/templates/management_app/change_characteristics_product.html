@@ -24,14 +24,14 @@
 
         <div class="col-sm-8 text-left">
             <h1>Товар: {{ product.title}}</h1>
-            <form action="{% url 'change_characteristics_product' product.pk %}" class="well well-sm" method="POST">
+            <form action="{% url 'change_characteristics_product' product.pk %}" class="well well-sm" method="POST" id="change">
                 {% csrf_token %}
                 <input type="text" value="{{ product.title}}" name="title" class="form-control"><br>
                 <textarea name="description" class="form-control">{{ product.description }}</textarea><br>
                 <input type="number" min="1" max="1000000000" value="{{ product.price }}" step="1" name="price" class="form-control"><br>
                 <input type="text" value="{{ product.brand}}" name="brand" class="form-control"><br>
 
-                <input type="submit" value="Изменить характеристики товара" class="btn btn-danger">
+                <input type="button" value="Изменить характеристики товара" class="btn btn-danger" id="change_characteristics"/>
 
             </form>
         </div>
@@ -55,4 +55,5 @@
 
 {% block scripts %}
 <script type="text/javascript" src="{% static 'js/interaction_with_accordion.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/confirmation_change_characteristics.js' %}"></script>
 {% endblock scripts %}
