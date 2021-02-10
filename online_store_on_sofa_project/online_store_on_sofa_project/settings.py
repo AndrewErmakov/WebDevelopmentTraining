@@ -88,8 +88,12 @@ WSGI_APPLICATION = 'online_store_on_sofa_project.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'online_sofa_store_db',
+        'USER': POSTGRES_USER,
+        'PASSWORD': POSTGRES_PASSWORD,
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
 }
 
@@ -163,7 +167,6 @@ LOGIN_REDIRECT_URL = '/'
 MEDIA_DIR = os.path.join(BASE_DIR, 'media')
 MEDIA_ROOT = MEDIA_DIR
 MEDIA_URL = '/media/'
-
 
 ROLEPERMISSIONS_MODULE = 'online_store_on_sofa_project.roles'
 # ROLEPERMISSIONS_REDIRECT_TO_LOGIN = True

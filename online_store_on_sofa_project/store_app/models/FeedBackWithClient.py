@@ -6,7 +6,7 @@ class FeedBackWithClient(models.Model):
     """Модель обращения клиентов с просьбой об обратной связи"""
     name_client = models.CharField(max_length=50, verbose_name='Имя клиента',
                                    validators=[validators.MinLengthValidator(5)])
-    phone_client = models.CharField(max_length=14, verbose_name='Номер телефона для обратной связи')
+    phone_client = models.CharField(max_length=15, verbose_name='Номер телефона для обратной связи')
     email_client = models.EmailField(verbose_name='Электронная почта для обратной связи',
                                      validators=[validators.MinLengthValidator(5)])
 
