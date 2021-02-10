@@ -3,7 +3,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect
 from django.views import View
 from online_store_on_sofa_project.secrets import STRIPE_APIKEY
-from store_app.coding_number_order import encryption_number_order
+from store_app.accessory_modules import encryption_number_order
 from store_app.models import Recipient, Order, ProductInCart, ProductsInOrder
 
 

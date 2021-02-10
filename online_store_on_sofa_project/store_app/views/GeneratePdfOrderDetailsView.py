@@ -3,7 +3,7 @@ from django.http import FileResponse
 from django.shortcuts import redirect
 from django.views import View
 
-from store_app.generate_pdf_details_order import GeneratePdfDetailsOrder
+from store_app.accessory_modules import GeneratePdfDetailsOrder
 from store_app.models import Order
 
 

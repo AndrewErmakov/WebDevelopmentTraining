@@ -2,7 +2,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect
 from django.views import View
 
-from store_app.coding_number_order import decryption_number_order
+from store_app.accessory_modules import decryption_number_order
 
 
 class OrderCreatedView(View, LoginRequiredMixin):
