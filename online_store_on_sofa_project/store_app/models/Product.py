@@ -25,7 +25,6 @@ class Product(models.Model):
                                          validators.MaxValueValidator(5)]
                                      )
 
-    count_reviews = models.PositiveIntegerField(verbose_name='Число отзывов на товар', default=0)
 
     class Meta:
         verbose_name_plural = 'Товары'
@@ -35,8 +34,3 @@ class Product(models.Model):
     def __str__(self):
         return self.title
 
-    def update_avgRating_countReviews(self, product):
-        """Сигнал после добавления комментария на товар"""
-        product.count_reviews += 1
-        product.avg_rating = product.comment_set.all().aggregate(Avg('rating'))['rating__avg']
-        product.save()

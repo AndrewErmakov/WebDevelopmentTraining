@@ -112,9 +112,13 @@
                 </form>
                 {% endif %}
             {% endif %}
-            {% if product.comment_set.all %}
+            {% if product.comments.all %}
             <div class="row" id="comments">
-              {% for comment in product.comment_set.all %}
+                {% with product.comments.count as total_comments %}
+                    <h2>Количество комментариев: {{ total_comments }}</h2>
+                {% endwith %}
+
+              {% for comment in product.comments.all %}
               <div class="panel panel-primary">
                 <div class="panel-heading">Оценка: {{ comment.rating }}</div>
                 <div class="panel-body">{{ comment.text_comment }}</div>

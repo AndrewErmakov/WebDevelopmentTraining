@@ -81,7 +81,7 @@
                                 {% if product.avg_rating == -1 %}
                                 <p>Оценок нет</p>
                                 {% else %}
-                                <p>Рейтинг: {{ product.avg_rating }} ({{ count_reviews_products.product }} отзывов)</p>
+                                <p>Рейтинг: <abbr title="Количество отзывов: {{ product.comments.count }}">{{ product.avg_rating }}</abbr></p>
                                 {% endif %}
                                 <form method="POST" action="{% url 'add_product_to_basket' %}" id="add_product_to_basket">
                                     {% csrf_token %}

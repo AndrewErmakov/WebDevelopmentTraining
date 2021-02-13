@@ -18,7 +18,7 @@ class ProductDetailsPageView(View):
             count_product_in_warehouse = 0
 
         try:
-            presence_flag_comment_user = bool(len(product.comment_set.filter(author_comment=request.user)))
+            presence_flag_comment_user = bool(len(product.comments.filter(author_comment=request.user)))
         except Exception as e:
             print(e)
             presence_flag_comment_user = False
@@ -28,3 +28,4 @@ class ProductDetailsPageView(View):
         context = {'product': product, 'rubrics': rubrics, 'presence_flag_comment_user': presence_flag_comment_user,
                    'rating': total_rating, 'count_product': count_product_in_warehouse}
         return render(request, 'product_details.html', context)
+
