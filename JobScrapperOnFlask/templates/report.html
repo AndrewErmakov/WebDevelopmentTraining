@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Результаты поиска по запросу: {{ searchBy }}</title>
+    <style>
+        section {
+            display:grid;
+            gap: 20px;
+            grid-template-columns: repeat(4, 1fr);
+        }
+    </style>
+</head>
+<body>
+    <h1>Результаты поиска</h1>
+    <h3>Найдено {{ count }} вакансий по запросу: {{ searchBy }}</h3>
+    <a href="/export?keyword={{searchBy}}">Скачать csv</a>
+    <section>
+        <h4>Название вакансии</h4>
+        <h4>Компания</h4>
+        <h4>Местоположение</h4>
+        <h4>Ссылка</h4>
+
+    {% for job in jobs %}
+        <span>{{ job.title }}</span>
+        <span>{{ job.company }}</span>
+        <span>{{ job.location }}</span>
+        <a href="{{job.link}}" target="_blank">Перейти</a>
+    {% endfor %}
+    </section>
+</body>
+</html>
