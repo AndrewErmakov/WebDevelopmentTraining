@@ -28,19 +28,9 @@
         </div>
         <div class="col-sm-8 text-left">
             <div class="container">
-                <div class="list-inline">
-                    <p class="lead">Cортировка</p>
-                    <select class="form-control" id="choice_sorting" onchange="window.location.href=this.options[this.selectedIndex].value">
-                        <option VALUE="{% url 'sorting_products' 'increase_price' %}">Дешевые сверху</option>
-                        <option VALUE="{% url 'sorting_products' 'decrease_price' %}">Дорогие сверху</option>
-                        <option VALUE="{% url 'sorting_products' 'top_rating' %}">Высокий рейтинг по отзывым</option>
-                        <option VALUE="{% url 'sorting_products' 'many_reviews' %}">Много отзывов</option>
-                        <option selected VALUE="{% url 'home' %}">По популярности</option>
-                    </select>
-                    <br>
-                </div>
                 <div class="row">
-                    {% for product in new_products %}
+                    <h2>Результаты по запросу: {{ query }}</h2>
+                    {% for product in products %}
                     <div class="col-sm-4">
                         <div class="panel panel-default">
                             <div class="panel-heading">
@@ -94,6 +84,8 @@
                             </div>
                         </div>
                     </div>
+                    {% empty %}
+                    <p>There are no results for your query.</p>
                     {% endfor %}
                 </div>
             </div><br>

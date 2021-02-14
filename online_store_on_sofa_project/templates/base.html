@@ -41,6 +41,17 @@
                         <li><a href="{% url 'login' %}"><span class="glyphicon glyphicon-log-in"></span>Login</a></li>
                     </ul>
                     {% endif %}
+                    <form class="navbar-form navbar-right" role="search" method="GET" action="{% url 'search_products' %}">
+                        {% csrf_token %}
+                        <div class="form-group input-group">
+                            <input type="text" class="form-control" placeholder="Search.." name="search_text">
+                            <span class="input-group-btn">
+                                <button class="btn btn-default" type="submit">
+                                    <span class="glyphicon glyphicon-search"></span>
+                                </button>
+                            </span>
+                        </div>
+                    </form>
                 </div>
             </nav>
         </header>

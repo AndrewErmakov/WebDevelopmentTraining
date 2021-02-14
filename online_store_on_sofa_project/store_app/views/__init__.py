@@ -17,3 +17,4 @@ from .ReduceCountProductsView import ReduceCountProductsView
 from .UserCartView import UserCartView
 from .error_403 import error_403
 from .error_404 import error_404
+from .SearchProductsView import SearchProductsView

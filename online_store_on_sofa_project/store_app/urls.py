@@ -7,6 +7,7 @@ urlpatterns = [
 
     path('product_details/<int:pk>/', ProductDetailsPageView.as_view(), name='product_details'),
     path('products_by_rubric/<int:pk>/', ProductsByRubricPageView.as_view(), name='products_by_rubric'),
+    path('search_products', SearchProductsView.as_view(), name='search_products'),
     # product page
     path('add_new_comment', AddNewCommentView.as_view(), name='add_new_comment'),
     path('add_product_to_basket', AddProductToCartView.as_view(), name='add_product_to_basket'),
