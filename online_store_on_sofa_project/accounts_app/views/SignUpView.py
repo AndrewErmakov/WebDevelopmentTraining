@@ -34,12 +34,11 @@ class SignUpView(View):
             last_name = register_form.cleaned_data['last_name']
 
             if password == password1:
-                user = User.objects.create_user(username=username,
-                                                email=email,
-                                                password=password,
-                                                first_name=first_name,
-                                                last_name=last_name)
-                user.save()
+                user = User.objects.create(username=username,
+                                           email=email,
+                                           password=password,
+                                           first_name=first_name,
+                                           last_name=last_name)
 
                 secret_code = ''.join(random.choice(string.ascii_uppercase + string.ascii_lowercase + string.digits)
                                       for _ in range(30))
@@ -49,7 +48,6 @@ class SignUpView(View):
                 self.send_letter_confirm_registration(data)
 
                 return redirect('activate_account')
-                # return render(request, 'activate_account.html', personal_data)
             else:
 
                 return self.get(request)

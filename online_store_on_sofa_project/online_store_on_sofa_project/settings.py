@@ -35,12 +35,10 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.postgres',
 
-    # third apps
+    # third-party apps
     'crispy_forms',
     'captcha',  # simple captcha
-    'g_recaptcha',  # recaptcha
     'rolepermissions',
-
     # my apps
     'store_app',
     'accounts_app',
@@ -144,7 +142,6 @@ STATICFILES_DIRS = [
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = email_host
 EMAIL_USE_TLS = True
-# EMAIL_USE_SSL = False
 EMAIL_PORT = email_port
 EMAIL_HOST_USER = email_host_user
 EMAIL_HOST_PASSWORD = email_host_password
@@ -174,3 +171,5 @@ ROLEPERMISSIONS_MODULE = 'online_store_on_sofa_project.roles'
 # ROLEPERMISSIONS_REDIRECT_TO_LOGIN = True
 ROLEPERMISSIONS_REGISTER_ADMIN = True
 # ROLEPERMISSIONS_SUPERUSER_SUPERPOWERS = False
+
+

@@ -1,7 +1,6 @@
+from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
 from django.shortcuts import render
 from django.views import View
-from django.contrib.postgres.search import TrigramSimilarity, SearchVector, SearchQuery, SearchRank
-
 from store_app.models import Product
 
 
