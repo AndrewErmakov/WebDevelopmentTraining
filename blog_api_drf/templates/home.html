@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    <title>Home</title>
+{% endblock title %}
+
+
+{% block main %}
+    {% verbatim %}
+    <div class="container" id="posts">
+        <div class="jumbotron" v-for="post in posts">
+            <h1><a v-bind:href="'post/' + post.id">{{ post.title }}</a></h1><br>
+            <p class="lead">{{ post.content }} </p>
+            <h4><span class="badge badge-secondary">{{ post.created }}</span></h4>
+        </div>
+        <hr>
+    </div>
+    {% endverbatim %}
+{% endblock main %}
+
+{% block scripts %}
+    <script type="text/javascript" src="{% static 'home_scripts.js' %}"></script>
+{% endblock scripts %}

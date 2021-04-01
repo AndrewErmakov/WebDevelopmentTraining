@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    <title>Details of post</title>
+{% endblock title %}
+
+{% block main %}
+    {% verbatim %}
+        <div class="container" id="post">
+            <div class="jumbotron">
+                <h1><a>{{ post.title }}</a></h1><br>
+                <p class="lead">{{ post.content }} </p>
+
+            </div>
+            <hr>
+        </div>
+    {% endverbatim %}
+{% endblock main %}
+
+{% block scripts %}
+<script type="text/javascript" src="{% static 'post_detail_scripts.js' %}"></script>
+{% endblock scripts %}

@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    <title>Create post</title>
+{% endblock title %}
+
+
+{% block main %}
+    <h1>New post</h1>
+    <form action="" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Save" />
+    </form>
+
+{% endblock main %}
+
+{% block scripts %}
+    <script type="text/javascript" src="{% static 'home_scripts.js' %}"></script>
+{% endblock scripts %}
