@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Page not found
+{% endblock title %}
+
+
+
+{% block main %}
+    <div class="jumbotron">
+        <h1 class="display-4">Page not found</h1>
+        <p class="lead">There is no such page, go to the home page.</p>
+        <hr class="my-4">
+        <a href="{{ url_for('index') }}" class="btn btn-primary btn-lg">Visit home page</a>
+    </div>
+{% endblock main %}
